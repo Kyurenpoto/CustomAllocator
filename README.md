@@ -1,2 +1,3 @@
 # CustomAllocator
-Custom memory allocator for game development using C++ 
+
+Custom memory allocator with memory pool using C++
