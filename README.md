@@ -2,6 +2,10 @@
 
 Custom memory allocator with memory pool using C++
 
+## dependency
+
+* MSVC 16
+
 ## structure
 
 * Main Allocator(Proxy Allocator)
