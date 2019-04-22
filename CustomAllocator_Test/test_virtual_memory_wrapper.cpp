@@ -6,19 +6,6 @@
 
 struct AddrInfo
 {
-	AddrInfo(const SIZE_T regionSize_, const DWORD state_) noexcept :
-		regionSize{ regionSize_ },
-		state{ state_ }
-	{}
-
-	AddrInfo(AddrInfo && other) noexcept :
-		regionSize{ other.regionSize },
-		state{ other.state }
-	{
-		other.regionSize = 0;
-		other.state = 0;
-	}
-
 	bool operator ==(const AddrInfo & other) const noexcept
 	{
 		return regionSize == other.regionSize && state == other.state;
