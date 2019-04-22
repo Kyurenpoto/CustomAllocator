@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cstddef>
 
-struct virtual_memory_allocator
+struct virtual_memory_wrapper
 {
 	static void *    reserve(std::size_t nPage);
 	static void *    commit(void * ptr, std::size_t nPage);
