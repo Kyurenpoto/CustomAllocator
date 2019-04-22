@@ -21,12 +21,12 @@
   <ItemGroup>
     <ClInclude Include="includes\custom_allocator.h" />
     <ClInclude Include="memory_pool.h" />
-    <ClInclude Include="page_allocator.h" />
+    <ClInclude Include="virtual_memory_allocator.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="memory_pool.cpp" />
-    <ClCompile Include="page_allocator.cpp" />
+    <ClCompile Include="virtual_memory_allocator.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>

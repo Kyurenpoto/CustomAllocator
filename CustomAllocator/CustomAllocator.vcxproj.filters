@@ -27,7 +27,7 @@
     <ClInclude Include="includes\custom_allocator.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="page_allocator.h">
+    <ClInclude Include="virtual_memory_allocator.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClCompile Include="memory_pool.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="page_allocator.cpp">
+    <ClCompile Include="virtual_memory_allocator.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
