@@ -19,14 +19,14 @@ void printAddrInfo(void * addr)
 
 int main()
 {
-    auto addr = virtual_memory_wrapper::reserve(16);
+    auto addr = virtual_memory::reserve(16);
 
     std::cout << "Reserve\n";
     std::this_thread::sleep_for(10s);
 
 	printAddrInfo(addr);
 
-    virtual_memory_wrapper::release(addr);
+    virtual_memory::release(addr);
 
     std::cout << "Release\n";
     std::this_thread::sleep_for(10s);

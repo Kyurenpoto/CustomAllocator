@@ -1,12 +1,11 @@
 #pragma once
 
-#include <cstdint>
 #include <cstddef>
 
-struct virtual_memory_wrapper
+namespace virtual_memory
 {
-	static void *    reserve(std::size_t nPage);
-	static void *    commit(void * ptr, std::size_t nPage);
-	static void      release(void * ptr);
-	static void      decommit(void * ptr, std::size_t nPage);
-};
+	void *    reserve(std::size_t nPage);
+	void *    commit(void* ptr, std::size_t nPage);
+	void      release(void* ptr);
+	void      decommit(void* ptr, std::size_t nPage);
+}

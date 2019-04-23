@@ -33,20 +33,20 @@ AddrInfo getAddrInfo(void * addr)
 
 TEST(VirtualMemoryWrapperTest, isMemoryReserved)
 {
-	auto addr = virtual_memory_wrapper::reserve(pageCntSmall);
+	auto addr = virtual_memory::reserve(pageCntSmall);
 	
 	auto info = getAddrInfo(addr);
 
-	virtual_memory_wrapper::release(addr);
+	virtual_memory::release(addr);
 
 	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntSmall, MEM_RESERVE }), info);
 }
 
 TEST(VirtualMemoryWrapperTest, isMemoryReleased)
 {
-	auto addr = virtual_memory_wrapper::reserve(pageCntSmall);
+	auto addr = virtual_memory::reserve(pageCntSmall);
 
-	virtual_memory_wrapper::release(addr);
+	virtual_memory::release(addr);
 
 	auto info = getAddrInfo(addr);
 
@@ -55,49 +55,49 @@ TEST(VirtualMemoryWrapperTest, isMemoryReleased)
 
 TEST(VirtualMemoryWrapperTest, isMemoryCommited)
 {
-	auto addr = virtual_memory_wrapper::reserve(pageCntSmall);
-	virtual_memory_wrapper::commit(addr, pageCntSmall);
+	auto addr = virtual_memory::reserve(pageCntSmall);
+	virtual_memory::commit(addr, pageCntSmall);
 
 	auto info = getAddrInfo(addr);
 
-	virtual_memory_wrapper::release(addr);
+	virtual_memory::release(addr);
 
 	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntSmall, MEM_COMMIT }), info);
 }
 
 TEST(VirtualMemoryWrapperTest, isMemoryDecommited)
 {
-	auto addr = virtual_memory_wrapper::reserve(pageCntSmall);
-	virtual_memory_wrapper::commit(addr, pageCntSmall);
-	virtual_memory_wrapper::decommit(addr, pageCntSmall);
+	auto addr = virtual_memory::reserve(pageCntSmall);
+	virtual_memory::commit(addr, pageCntSmall);
+	virtual_memory::decommit(addr, pageCntSmall);
 
 	auto info = getAddrInfo(addr);
 
-	virtual_memory_wrapper::release(addr);
+	virtual_memory::release(addr);
 
 	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntSmall, MEM_RESERVE }), info);
 }
 
 TEST(VirtualMemoryWrapperTest, isLargeMemoryReserved)
 {
-	auto addr = virtual_memory_wrapper::reserve(pageCntLarge);
+	auto addr = virtual_memory::reserve(pageCntLarge);
 
 	auto info = getAddrInfo(addr);
 
-	virtual_memory_wrapper::release(addr);
+	virtual_memory::release(addr);
 
 	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntLarge, MEM_RESERVE }), info);
 }
 
 TEST(VirtualMemoryWrapperTest, isLargeMemoryCommited)
 {
-	auto addr = virtual_memory_wrapper::reserve(pageCntLarge);
-	virtual_memory_wrapper::commit(addr, pageCntLarge);
+	auto addr = virtual_memory::reserve(pageCntLarge);
+	virtual_memory::commit(addr, pageCntLarge);
 
 	auto info = getAddrInfo(addr);
 
-	virtual_memory_wrapper::decommit(addr, pageCntLarge);
-	virtual_memory_wrapper::release(addr);
+	virtual_memory::decommit(addr, pageCntLarge);
+	virtual_memory::release(addr);
 
 	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntLarge, MEM_COMMIT }), info);
 }
