@@ -1,8 +1,6 @@
 #include "stdafx.h"
 
-#include "page_allocator.h"
-
-#include <cstddef>
+#include "area_allocator.h"
 
 namespace
 {
@@ -18,11 +16,11 @@ namespace
         return target - target % unit;
     }
 
-    struct page_allocator
+    struct area_allocator
     {
-        page_allocator() = default;
+        area_allocator() = default;
 
-        ~page_allocator()
+        ~area_allocator()
         {
             dispose();
         }
@@ -86,7 +84,7 @@ namespace
         std::size_t _sizeMemoryMax = 0;
     };
 
-    static page_allocator allocator;
+    static area_allocator allocator;
 }
 
 namespace AreaAllocator
