@@ -8,7 +8,7 @@ namespace
     constexpr std::size_t SIZE_AREA_MIN = 64 * 1024;
     constexpr std::size_t SIZE_AREA_MAX = 4ull * 1024 * 1024 * 1024;
 
-    std::size_t unitize(const std::size_t unit, const std::size_t target)
+    std::size_t unitize(const std::size_t target, const std::size_t unit)
     {
         assert(unit > 0 &&
                target > 0);
@@ -41,8 +41,7 @@ namespace
             try
             {
                 _sizeAreaMin = unitize(sizeAreaMin, SIZE_PAGE);
-				_sizeMemoryMax = unitize(unitize(sizeMemoryMax, SIZE_PAGE),
-										 _sizeAreaMin);
+				_sizeMemoryMax = unitize(sizeMemoryMax, _sizeAreaMin);
 
 				assert(sizeMemoryMax > sizeAreaMin);
             }
