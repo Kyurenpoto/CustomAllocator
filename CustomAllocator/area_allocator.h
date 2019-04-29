@@ -25,4 +25,8 @@ namespace AreaAllocator
     AreaResult Dispose();
     AreaResult Allocate(memory_area & target);
     AreaResult Deallocate(memory_area & target);
+
+	std::size_t getSizeAreaMin();
+	std::size_t getSizeMemoryMax();
+	std::size_t getSizeAllocated();
 }

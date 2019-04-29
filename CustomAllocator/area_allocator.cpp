@@ -41,20 +41,10 @@ namespace
             try
             {
                 _sizeAreaMin = unitize(sizeAreaMin, SIZE_PAGE);
-                _sizeMemoryMax = unitize(sizeMemoryMax, SIZE_PAGE);
-            }
-            catch(...)
-            {
-                return AreaAllocator::AreaResult::UNDEFINED;
-            }
+				_sizeMemoryMax = unitize(unitize(sizeMemoryMax, SIZE_PAGE),
+										 _sizeAreaMin);
 
-            try
-            {
-                _sizeMemoryMax = unitize(_sizeMemoryMax, _sizeAreaMin);
-                
-                assert(sizeMemoryMax > sizeAreaMin);
-
-                return AreaAllocator::AreaResult::SUCCESSED;
+				assert(sizeMemoryMax > sizeAreaMin);
             }
             catch(...)
             {
@@ -79,9 +69,9 @@ namespace
             return AreaAllocator::AreaResult::SUCCESSED;
         }
 
-    private:
         std::size_t _sizeAreaMin = 0;
         std::size_t _sizeMemoryMax = 0;
+		std::size_t _sizeAllocated = 0;
     };
 
     static area_allocator allocator;
@@ -109,4 +99,19 @@ namespace AreaAllocator
     {
         return allocator.deallocate(target);
     }
+
+	std::size_t getSizeAreaMin()
+	{
+		return allocator._sizeAreaMin;
+	}
+
+	std::size_t getSizeMemoryMax()
+	{
+		return allocator._sizeMemoryMax;
+	}
+
+	std::size_t getSizeAllocated()
+	{
+		return allocator._sizeAllocated;
+	}
 }
