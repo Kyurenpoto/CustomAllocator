@@ -8,9 +8,26 @@ namespace
 	constexpr std::size_t SIZE_MEMORY = 4ull * 1024 * 1024 * 1024;
 }
 
-TEST(AreaAllocatorTest, isInitiated)
+class AreaAllocatorTest :
+    public testing::Test
 {
-    ASSERT_DEATH(AreaAllocator::Initiate(SIZE_AREA, SIZE_MEMORY), "Error on line .*");
+protected:
+    virtual void TearDown()
+    {
+        try
+        {
+            AreaAllocator::Dispose();
+        }
+        catch (...)
+        {
+
+        }
+    }
+};
+
+TEST_F(AreaAllocatorTest, isInitiated)
+{
+    AreaAllocator::Initiate(SIZE_AREA, SIZE_MEMORY);
 
 	std::size_t sizeAreaMin = AreaAllocator::getSizeAreaMin();
 	std::size_t sizeMemoryMax = AreaAllocator::getSizeMemoryMax();
@@ -21,20 +38,19 @@ TEST(AreaAllocatorTest, isInitiated)
     ASSERT_EQ(sizeMemoryMax, SIZE_MEMORY);
 }
 
-TEST(AreaAllocatorTest, isAlreadyInitiated)
+TEST_F(AreaAllocatorTest, isAlreadyInitiated)
 {
     AreaAllocator::Initiate(SIZE_AREA, SIZE_MEMORY);
     
-    ASSERT_DEATH(AreaAllocator::Initiate(SIZE_AREA, SIZE_MEMORY), "*");
-
-    AreaAllocator::Dispose();
+    ASSERT_THROW(AreaAllocator::Initiate(SIZE_AREA, SIZE_MEMORY),
+                 AreaAllocator::allocator_already_initiated);
 }
 
-TEST(AreaAllocatorTest, isDisposed)
+TEST_F(AreaAllocatorTest, isDisposed)
 {
     AreaAllocator::Initiate(SIZE_AREA, SIZE_MEMORY);
 
-    ASSERT_DEATH(AreaAllocator::Dispose(), "*");
+    AreaAllocator::Dispose();
 
     std::size_t sizeAreaMin = AreaAllocator::getSizeAreaMin();
     std::size_t sizeMemoryMax = AreaAllocator::getSizeMemoryMax();

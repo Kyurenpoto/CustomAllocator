@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-namespace
+namespace AreaAllocator
 {
     struct allocator_already_initiated :
         public std::exception
@@ -19,10 +19,7 @@ namespace
     struct allocator_empty :
         public std::exception
     {};
-}
 
-namespace AreaAllocator
-{
     struct memory_area
     {
         void* location;

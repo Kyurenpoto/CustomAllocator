@@ -34,7 +34,7 @@ namespace
         void initiate(std::size_t sizeAreaMin, std::size_t sizeMemoryMax)
         {
             if (!isInitiatable())
-                throw allocator_already_initiated{};
+                throw AreaAllocator::allocator_already_initiated{};
 
             _sizeAreaMin = unitize(sizeAreaMin, SIZE_PAGE);
             _sizeMemoryMax = unitize(sizeMemoryMax, _sizeAreaMin);
