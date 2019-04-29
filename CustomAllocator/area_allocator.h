@@ -7,10 +7,6 @@ namespace AreaAllocator
     struct allocator_already_initiated :
         public std::exception
     {};
-
-    struct allocator_already_disposed :
-        public std::exception
-    {};
     
     struct allocator_runout :
         public std::exception
@@ -30,7 +26,6 @@ namespace AreaAllocator
     {
         SUCCESSED,
         ALREADY_INITIATED,
-        ALREADY_DISPOSED,
         RUN_OUT,
         EMPTY,
         UNDEFINED
@@ -38,7 +33,7 @@ namespace AreaAllocator
 
     void Initiate(const std::size_t sizeAreaMin,
                   const std::size_t sizeMemoryMax);
-    void Dispose();
+    void Dispose() noexcept;
     void Allocate(memory_area & target);
     void Deallocate(memory_area & target);
 

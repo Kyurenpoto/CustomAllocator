@@ -12,16 +12,9 @@ class AreaAllocatorTest :
     public testing::Test
 {
 protected:
-    virtual void TearDown()
+    virtual void SetUp()
     {
-        try
-        {
-            AreaAllocator::Dispose();
-        }
-        catch (...)
-        {
-
-        }
+        AreaAllocator::Dispose();
     }
 };
 

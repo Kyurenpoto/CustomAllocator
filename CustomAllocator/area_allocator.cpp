@@ -69,7 +69,7 @@ namespace AreaAllocator
         allocator.initiate(sizeAreaMin, sizeMemoryMax);
     }
 
-    void Dispose()
+    void Dispose() noexcept
     {
         allocator.dispose();
     }
