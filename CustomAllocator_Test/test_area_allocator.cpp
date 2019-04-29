@@ -27,7 +27,7 @@ protected:
 
 TEST_F(AreaAllocatorTest, isInitiated)
 {
-    AreaAllocator::Initiate(SIZE_AREA, SIZE_MEMORY);
+    ASSERT_NO_THROW(AreaAllocator::Initiate(SIZE_AREA, SIZE_MEMORY));
 
 	std::size_t sizeAreaMin = AreaAllocator::getSizeAreaMin();
 	std::size_t sizeMemoryMax = AreaAllocator::getSizeMemoryMax();
@@ -50,7 +50,7 @@ TEST_F(AreaAllocatorTest, isDisposed)
 {
     AreaAllocator::Initiate(SIZE_AREA, SIZE_MEMORY);
 
-    AreaAllocator::Dispose();
+    ASSERT_NO_THROW(AreaAllocator::Dispose());
 
     std::size_t sizeAreaMin = AreaAllocator::getSizeAreaMin();
     std::size_t sizeMemoryMax = AreaAllocator::getSizeMemoryMax();
