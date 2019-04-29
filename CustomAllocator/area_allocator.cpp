@@ -2,6 +2,8 @@
 
 #include "area_allocator.h"
 
+#include <stdexcept>
+
 namespace
 {
     constexpr std::size_t SIZE_PAGE = 4 * 1024;
@@ -10,8 +12,7 @@ namespace
 
     std::size_t unitize(const std::size_t target, const std::size_t unit)
     {
-        assert(unit > 0 &&
-               target > 0);
+        assert(unit > 0 && target > unit);
 
         return target - target % unit;
     }
@@ -25,47 +26,31 @@ namespace
             dispose();
         }
 
-        AreaAllocator::AreaResult initiate(
-            std::size_t sizeAreaMin,
-            std::size_t sizeMemoryMax)
+        bool isInitiatable()
         {
-            try
-            {
-                assert(_sizeAreaMin == 0 && _sizeMemoryMax == 0);
-            }
-            catch (...)
-            {
-                return AreaAllocator::AreaResult::ALREADY_INITIATED;
-            }
+            return _sizeAreaMin == 0 && _sizeMemoryMax == 0;
+        }
 
-            try
-            {
-                _sizeAreaMin = unitize(sizeAreaMin, SIZE_PAGE);
-				_sizeMemoryMax = unitize(sizeMemoryMax, _sizeAreaMin);
+        void initiate(std::size_t sizeAreaMin, std::size_t sizeMemoryMax)
+        {
+            if (!isInitiatable())
+                throw allocator_already_initiated{};
 
-				assert(sizeMemoryMax > sizeAreaMin);
-            }
-            catch(...)
-            {
-                return AreaAllocator::AreaResult::UNDEFINED;
-            }
+            _sizeAreaMin = unitize(sizeAreaMin, SIZE_PAGE);
+            _sizeMemoryMax = unitize(sizeMemoryMax, _sizeAreaMin);
         }
         
-        AreaAllocator::AreaResult dispose()
+        void dispose()
         {
-            return AreaAllocator::AreaResult::SUCCESSED;
+            _sizeAreaMin = _sizeMemoryMax = 0;
         }
         
-        AreaAllocator::AreaResult allocate(
-            AreaAllocator::memory_area & target)
+        void allocate(AreaAllocator::memory_area & target)
         {
-            return AreaAllocator::AreaResult::SUCCESSED;
         }
         
-        AreaAllocator::AreaResult deallocate(
-            AreaAllocator::memory_area & target)
+        void deallocate(AreaAllocator::memory_area & target)
         {
-            return AreaAllocator::AreaResult::SUCCESSED;
         }
 
         std::size_t _sizeAreaMin = 0;
@@ -78,25 +63,25 @@ namespace
 
 namespace AreaAllocator
 {
-    AreaResult Initiate(const std::size_t sizeAreaMin,
-                        const std::size_t sizeMemoryMax)
+    void Initiate(const std::size_t sizeAreaMin,
+                  const std::size_t sizeMemoryMax)
     {
-        return allocator.initiate(sizeAreaMin, sizeMemoryMax);
+        allocator.initiate(sizeAreaMin, sizeMemoryMax);
     }
 
-    AreaResult Dispose()
+    void Dispose()
     {
-        return allocator.dispose();
+        allocator.dispose();
     }
 
-    AreaResult Allocate(memory_area & target)
+    void Allocate(memory_area & target)
     {
-        return allocator.allocate(target);
+        allocator.allocate(target);
     }
     
-    AreaResult Deallocate(memory_area & target)
+    void Deallocate(memory_area & target)
     {
-        return allocator.deallocate(target);
+        allocator.deallocate(target);
     }
 
 	std::size_t getSizeAreaMin()
