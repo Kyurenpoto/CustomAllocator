@@ -13,12 +13,11 @@ struct AddrInfo
 
 	SIZE_T regionSize;
 	DWORD state;
-
-	static constexpr SIZE_T pageSize = 4 * 1024;
 };
 
 namespace
 {
+    constexpr SIZE_T pageSize = 4 * 1024;
 	constexpr SIZE_T pageCntSmall = 16;
 	constexpr SIZE_T pageCntLarge = 1024 * 1024;
 }
@@ -39,7 +38,7 @@ TEST(VirtualMemoryWrapperTest, isMemoryReserved)
 
 	virtual_memory::release(addr);
 
-	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntSmall, MEM_RESERVE }), info);
+	ASSERT_EQ((AddrInfo{ pageSize * pageCntSmall, MEM_RESERVE }), info);
 }
 
 TEST(VirtualMemoryWrapperTest, isMemoryReleased)
@@ -48,9 +47,9 @@ TEST(VirtualMemoryWrapperTest, isMemoryReleased)
 
 	virtual_memory::release(addr);
 
-	auto info = getAddrInfo(addr);
+    auto info = getAddrInfo(addr);
 
-	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntSmall, MEM_FREE }), info);
+	ASSERT_EQ(MEM_FREE, info.state);
 }
 
 TEST(VirtualMemoryWrapperTest, isMemoryCommited)
@@ -62,7 +61,7 @@ TEST(VirtualMemoryWrapperTest, isMemoryCommited)
 
 	virtual_memory::release(addr);
 
-	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntSmall, MEM_COMMIT }), info);
+	ASSERT_EQ((AddrInfo{ pageSize * pageCntSmall, MEM_COMMIT }), info);
 }
 
 TEST(VirtualMemoryWrapperTest, isMemoryDecommited)
@@ -75,7 +74,7 @@ TEST(VirtualMemoryWrapperTest, isMemoryDecommited)
 
 	virtual_memory::release(addr);
 
-	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntSmall, MEM_RESERVE }), info);
+	ASSERT_EQ((AddrInfo{ pageSize * pageCntSmall, MEM_RESERVE }), info);
 }
 
 TEST(VirtualMemoryWrapperTest, isLargeMemoryReserved)
@@ -86,7 +85,7 @@ TEST(VirtualMemoryWrapperTest, isLargeMemoryReserved)
 
 	virtual_memory::release(addr);
 
-	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntLarge, MEM_RESERVE }), info);
+	ASSERT_EQ((AddrInfo{ pageSize * pageCntLarge, MEM_RESERVE }), info);
 }
 
 TEST(VirtualMemoryWrapperTest, isLargeMemoryCommited)
@@ -99,5 +98,5 @@ TEST(VirtualMemoryWrapperTest, isLargeMemoryCommited)
 	virtual_memory::decommit(addr, pageCntLarge);
 	virtual_memory::release(addr);
 
-	ASSERT_EQ((AddrInfo{ AddrInfo::pageSize * pageCntLarge, MEM_COMMIT }), info);
+	ASSERT_EQ((AddrInfo{ pageSize * pageCntLarge, MEM_COMMIT }), info);
 }
