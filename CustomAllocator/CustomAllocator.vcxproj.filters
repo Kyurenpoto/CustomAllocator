@@ -33,7 +33,10 @@
     <ClInclude Include="area_allocator.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="shared_list.h">
+    <ClInclude Include="shared_list.ipp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="shared_list.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -48,9 +51,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="area_allocator.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="shared_list.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

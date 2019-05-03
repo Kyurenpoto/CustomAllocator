@@ -32,5 +32,4 @@ private:
     T * data;
 };
 
-template<class T>
-struct shared_list<0, T>;
+#include "shared_list.ipp"
