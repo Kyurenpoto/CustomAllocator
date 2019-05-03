@@ -26,10 +26,10 @@ struct shared_list
 private:
     uint32_t _size;
     
-    uint32_t * idNext;
-    uint32_t * idNrev;
+    uint32_t * idNext = nullptr;
+    uint32_t * idPrev = nullptr;
 
-    T * data;
+    T * data = nullptr;
 };
 
 #include "shared_list.ipp"
