@@ -3,8 +3,6 @@
 #include <cstddef>
 #include <stdexcept>
 
-#include "shared_list.hpp"
-
 namespace AreaAllocator
 {
     struct allocator_already_initiated :

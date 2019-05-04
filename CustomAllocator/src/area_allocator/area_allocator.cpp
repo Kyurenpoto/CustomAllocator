@@ -15,6 +15,8 @@ namespace
         return target - target % unit;
     }
 
+#include "includes/area_allocator/shared_list.hpp"
+
     struct area_allocator
     {
         area_allocator() = default;
@@ -51,9 +53,12 @@ namespace
         {
         }
 
+    public:
         std::size_t _sizeAreaMin = 0;
         std::size_t _sizeMemoryMax = 0;
 		std::size_t _sizeAllocated = 0;
+
+        shared_list<2, AreaAllocator::memory_area> areas;
     };
 
     static area_allocator allocator;
