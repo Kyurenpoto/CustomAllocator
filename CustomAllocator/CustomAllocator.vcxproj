@@ -19,18 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="includes\area_allocator\area_allocator.h" />
+    <ClInclude Include="includes\area_allocator\impl\shared_list.ipp" />
+    <ClInclude Include="includes\area_allocator\shared_list.hpp" />
+    <ClInclude Include="includes\area_allocator\virtual_memory_wrapper.h" />
     <ClInclude Include="includes\custom_allocator.h" />
-    <ClInclude Include="memory_pool.h" />
-    <ClInclude Include="area_allocator.h" />
-    <ClInclude Include="shared_list.hpp" />
-    <ClInclude Include="shared_list.ipp" />
-    <ClInclude Include="virtual_memory_wrapper.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="memory_pool.cpp" />
-    <ClCompile Include="area_allocator.cpp" />
-    <ClCompile Include="virtual_memory_wrapper.cpp" />
+    <ClCompile Include="src\area_allocator\area_allocator.cpp" />
+    <ClCompile Include="src\area_allocator\virtual_memory_wrapper.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
@@ -123,6 +121,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>D:\Repos\CustomAllocator\CustomAllocator;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

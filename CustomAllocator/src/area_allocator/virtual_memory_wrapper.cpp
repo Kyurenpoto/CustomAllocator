@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "virtual_memory_wrapper.h"
+#include "includes/area_allocator/virtual_memory_wrapper.h"
 
 namespace
 {

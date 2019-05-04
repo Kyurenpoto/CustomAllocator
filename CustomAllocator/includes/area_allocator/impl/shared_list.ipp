@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shared_list.hpp"
+#include "../shared_list.hpp"
 #include <cassert>
 
 #include <cstdint>

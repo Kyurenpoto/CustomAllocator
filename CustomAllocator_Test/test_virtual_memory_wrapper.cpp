@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "../CustomAllocator/virtual_memory_wrapper.h"
+#include "../CustomAllocator/includes/area_allocator/virtual_memory_wrapper.h"
 
 #include <windows.h>
 

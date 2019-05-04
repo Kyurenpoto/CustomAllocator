@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <stdexcept>
+
+#include "shared_list.hpp"
 
 namespace AreaAllocator
 {

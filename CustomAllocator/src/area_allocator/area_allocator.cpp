@@ -1,8 +1,6 @@
 #include "stdafx.h"
 
-#include "area_allocator.h"
-
-#include <stdexcept>
+#include "includes/area_allocator/area_allocator.h"
 
 namespace
 {
