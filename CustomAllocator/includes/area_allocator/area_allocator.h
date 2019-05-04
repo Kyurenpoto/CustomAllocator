@@ -3,6 +3,8 @@
 #include <cstddef>
 #include <stdexcept>
 
+#include "memory_area.h"
+
 namespace AreaAllocator
 {
     struct allocator_already_initiated :
@@ -16,8 +18,6 @@ namespace AreaAllocator
     struct allocator_empty :
         public std::exception
     {};
-
-#include "memory_area.h"
 
     enum class AreaResult
     {

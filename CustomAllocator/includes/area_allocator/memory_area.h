@@ -2,8 +2,11 @@
 
 #include <cstddef>
 
-struct memory_area
+namespace AreaAllocator
 {
-    void* location;
-    std::size_t size;
-};
+    struct memory_area
+    {
+        void* location;
+        std::size_t size;
+    };
+}

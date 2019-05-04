@@ -20,15 +20,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="includes\area_allocator\area_allocator.h" />
-    <ClInclude Include="includes\area_allocator\impl\shared_list.ipp" />
+    <ClInclude Include="includes\area_allocator\area_manager.h" />
     <ClInclude Include="includes\area_allocator\memory_area.h" />
-    <ClInclude Include="includes\area_allocator\shared_list.hpp" />
     <ClInclude Include="includes\area_allocator\virtual_memory_wrapper.h" />
     <ClInclude Include="includes\custom_allocator.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\area_allocator\area_allocator.cpp" />
+    <ClCompile Include="src\area_allocator\area_manager.cpp" />
     <ClCompile Include="src\area_allocator\virtual_memory_wrapper.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
