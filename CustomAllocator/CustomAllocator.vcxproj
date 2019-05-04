@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="includes\area_allocator\area_allocator.h" />
     <ClInclude Include="includes\area_allocator\impl\shared_list.ipp" />
+    <ClInclude Include="includes\area_allocator\memory_area.h" />
     <ClInclude Include="includes\area_allocator\shared_list.hpp" />
     <ClInclude Include="includes\area_allocator\virtual_memory_wrapper.h" />
     <ClInclude Include="includes\custom_allocator.h" />

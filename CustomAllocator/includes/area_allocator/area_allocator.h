@@ -17,11 +17,7 @@ namespace AreaAllocator
         public std::exception
     {};
 
-    struct memory_area
-    {
-        void* location;
-        std::size_t size;
-    };
+#include "memory_area.h"
 
     enum class AreaResult
     {
