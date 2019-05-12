@@ -11,10 +11,7 @@ void * virtual_memory::reserve(std::size_t nPage)
 {
 	void* reserved = VirtualAlloc(nullptr, nPage * PAGE_SIZE, MEM_RESERVE, PAGE_READWRITE);
 
-	if (reserved == nullptr)
-	{
-		abort();
-	}
+    assert(reserved != nullptr);
 
 	return reserved;
 }
@@ -23,26 +20,17 @@ void * virtual_memory::commit(void * ptr, std::size_t nPage)
 {
 	void* commited = VirtualAlloc(ptr, nPage * PAGE_SIZE, MEM_COMMIT, PAGE_READWRITE);
 
-	if (commited == nullptr)
-	{
-		abort();
-	}
+    assert(commited != nullptr);
 
 	return commited;
 }
 
 void virtual_memory::release(void * ptr)
 {
-	if (VirtualFree(ptr, 0, MEM_RELEASE) == 0)
-	{
-		abort();
-	}
+    assert(VirtualFree(ptr, 0, MEM_RELEASE));
 }
 
 void virtual_memory::decommit(void * ptr, std::size_t nPage)
 {
-	if (VirtualFree(ptr, nPage * PAGE_SIZE, MEM_DECOMMIT) == 0)
-	{
-		abort();
-	}
+    assert(VirtualFree(ptr, nPage * PAGE_SIZE, MEM_DECOMMIT));
 }
