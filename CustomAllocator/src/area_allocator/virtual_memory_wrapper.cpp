@@ -34,3 +34,18 @@ void virtual_memory::decommit(void * ptr, std::size_t nPage)
 {
     assert(VirtualFree(ptr, nPage * PAGE_SIZE, MEM_DECOMMIT));
 }
+
+void* virtual_memory::alloc(std::size_t nPage)
+{
+    void * ptr = VirtualAlloc(nullptr, nPage * PAGE_SIZE,
+                              MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+
+    assert(ptr != nullptr);
+
+    return ptr;
+}
+
+void virtual_memory::dealloc(void * ptr, std::size_t nPage)
+{
+    assert(VirtualFree(ptr, nPage * PAGE_SIZE, MEM_DECOMMIT | MEM_RELEASE));
+}
