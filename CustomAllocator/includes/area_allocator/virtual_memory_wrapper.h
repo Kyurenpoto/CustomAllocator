@@ -14,5 +14,21 @@ namespace virtual_memory
 	void      decommit(void* ptr, std::size_t nPage);
 
     void *    alloc(std::size_t nPage);
-    void      dealloc(void* ptr, std::size_t nPage);
+    void      dealloc(void * addr, std::size_t nPage);
+
+    struct AddrInfo
+    {
+        std::size_t nPage;
+
+        enum class AddrState
+        {
+            FREE,
+            RESERVE,
+            COMMIT
+        };
+
+        AddrState state;
+    };
+
+    AddrInfo getAddrInfo(void * addr);
 }

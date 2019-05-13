@@ -37,15 +37,15 @@ void virtual_memory::decommit(void * ptr, std::size_t nPage)
 
 void* virtual_memory::alloc(std::size_t nPage)
 {
-    void * ptr = VirtualAlloc(nullptr, nPage * PAGE_SIZE,
-                              MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+    void * addr = VirtualAlloc(nullptr, nPage * PAGE_SIZE,
+                              MEM_COMMIT, PAGE_READWRITE);
 
-    assert(ptr != nullptr);
+    assert(addr != nullptr);
 
-    return ptr;
+    return addr;
 }
 
-void virtual_memory::dealloc(void * ptr, std::size_t nPage)
+void virtual_memory::dealloc(void * addr, std::size_t nPage)
 {
-    assert(VirtualFree(ptr, nPage * PAGE_SIZE, MEM_DECOMMIT | MEM_RELEASE));
+    assert(VirtualFree(addr, nPage * PAGE_SIZE, MEM_RELEASE));
 }
