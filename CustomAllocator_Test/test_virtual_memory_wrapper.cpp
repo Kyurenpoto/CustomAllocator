@@ -4,99 +4,80 @@
 
 #include <windows.h>
 
-struct AddrInfo
-{
-	bool operator ==(const AddrInfo & other) const noexcept
-	{
-		return regionSize == other.regionSize && state == other.state;
-	}
-
-	SIZE_T regionSize;
-	DWORD state;
-};
-
 namespace
 {
     constexpr SIZE_T pageSize = 4 * 1024;
 	constexpr SIZE_T pageCntSmall = 16;
 	constexpr SIZE_T pageCntLarge = 1024 * 1024;
+
+    struct tmp_class :
+        public virtual_memory::AddrInfo
+    {
+        bool operator == (const virtual_memory::AddrInfo& other) const
+        {
+            // The VirtualQuery function returns result of
+            // scanning memory from the given address,
+            // until the state of the page block changes.
+
+            return nPage <= other.nPage && state == other.state;
+        }
+    };
 }
 
-AddrInfo getAddrInfo(void * addr)
-{
-	MEMORY_BASIC_INFORMATION mbi;
-	VirtualQuery(addr, &mbi, sizeof(mbi));
+// TODO: Value-Parameterized Tests using gtest
 
-	return AddrInfo{ mbi.RegionSize, mbi.State };
+TEST(VirtualMemoryWrapperTest, isMemoryAllocated)
+{
+    auto addr = virtual_memory::alloc(pageCntSmall);
+
+    auto info = virtual_memory::getAddrInfo(addr);
+
+    virtual_memory::dealloc(addr);
+
+    ASSERT_EQ((tmp_class{
+                  pageCntSmall,
+                  virtual_memory::AddrInfo::AddrState::COMMIT }),
+              info);
 }
 
-TEST(VirtualMemoryWrapperTest, isMemoryReserved)
+TEST(VirtualMemoryWrapperTest, isMemoryDeallocated)
 {
-	auto addr = virtual_memory::reserve(pageCntSmall);
-	
-	auto info = getAddrInfo(addr);
+    auto addr = virtual_memory::alloc(pageCntSmall);
 
-	virtual_memory::release(addr);
+    virtual_memory::dealloc(addr);
 
-	ASSERT_EQ((AddrInfo{ pageSize * pageCntSmall, MEM_RESERVE }), info);
+    auto info = virtual_memory::getAddrInfo(addr);
+
+    ASSERT_EQ((tmp_class{
+                  pageCntSmall,
+                  virtual_memory::AddrInfo::AddrState::FREE }),
+              info);
 }
 
-TEST(VirtualMemoryWrapperTest, isMemoryReleased)
+TEST(VirtualMemoryWrapperTest, isMemoryAllocatedLarge)
 {
-	auto addr = virtual_memory::reserve(pageCntSmall);
+    auto addr = virtual_memory::alloc(pageCntLarge);
 
-	virtual_memory::release(addr);
+    auto info = virtual_memory::getAddrInfo(addr);
 
-    auto info = getAddrInfo(addr);
+    virtual_memory::dealloc(addr);
 
-	ASSERT_EQ(MEM_FREE, info.state);
+    ASSERT_EQ((tmp_class{
+                  pageCntLarge,
+                  virtual_memory::AddrInfo::AddrState::COMMIT }),
+              info);
 }
 
-TEST(VirtualMemoryWrapperTest, isMemoryCommited)
+TEST(VirtualMemoryWrapperTest, isMemoryDeallocatedLarge)
 {
-	auto addr = virtual_memory::reserve(pageCntSmall);
-	virtual_memory::commit(addr, pageCntSmall);
+    auto addr = virtual_memory::alloc(pageCntLarge);
 
-	auto info = getAddrInfo(addr);
+    virtual_memory::dealloc(addr);
 
-	virtual_memory::release(addr);
+    auto info = virtual_memory::getAddrInfo(addr);
 
-	ASSERT_EQ((AddrInfo{ pageSize * pageCntSmall, MEM_COMMIT }), info);
-}
-
-TEST(VirtualMemoryWrapperTest, isMemoryDecommited)
-{
-	auto addr = virtual_memory::reserve(pageCntSmall);
-	virtual_memory::commit(addr, pageCntSmall);
-	virtual_memory::decommit(addr, pageCntSmall);
-
-	auto info = getAddrInfo(addr);
-
-	virtual_memory::release(addr);
-
-	ASSERT_EQ((AddrInfo{ pageSize * pageCntSmall, MEM_RESERVE }), info);
-}
-
-TEST(VirtualMemoryWrapperTest, isLargeMemoryReserved)
-{
-	auto addr = virtual_memory::reserve(pageCntLarge);
-
-	auto info = getAddrInfo(addr);
-
-	virtual_memory::release(addr);
-
-	ASSERT_EQ((AddrInfo{ pageSize * pageCntLarge, MEM_RESERVE }), info);
-}
-
-TEST(VirtualMemoryWrapperTest, isLargeMemoryCommited)
-{
-	auto addr = virtual_memory::reserve(pageCntLarge);
-	virtual_memory::commit(addr, pageCntLarge);
-
-	auto info = getAddrInfo(addr);
-
-	virtual_memory::decommit(addr, pageCntLarge);
-	virtual_memory::release(addr);
-
-	ASSERT_EQ((AddrInfo{ pageSize * pageCntLarge, MEM_COMMIT }), info);
+    ASSERT_EQ((tmp_class{
+                  pageCntLarge,
+                  virtual_memory::AddrInfo::AddrState::FREE }),
+              info);
 }
