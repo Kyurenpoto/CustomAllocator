@@ -5,9 +5,9 @@
 namespace
 {
     struct tmp_class :
-        public virtual_memory::AddrInfo
+        public virtual_memory::addr_info
     {
-        bool operator == (const virtual_memory::AddrInfo& other) const
+        bool operator == (const virtual_memory::addr_info& other) const
         {
             // The VirtualQuery function returns result of
             // scanning memory from the given address,
@@ -34,7 +34,7 @@ TEST_P(VirtualMemoryWrapperTest, isMemoryAllocated)
 
     ASSERT_EQ((tmp_class{
                   pageCnt,
-                  virtual_memory::AddrInfo::AddrState::ALLOCATED }),
+                  virtual_memory::addr_info::addr_state::ALLOCATED }),
               info);
 }
 
@@ -50,7 +50,7 @@ TEST_P(VirtualMemoryWrapperTest, isMemoryDeallocated)
 
     ASSERT_EQ((tmp_class{
                   pageCnt,
-                  virtual_memory::AddrInfo::AddrState::DEALLOCATED }),
+                  virtual_memory::addr_info::addr_state::DEALLOCATED }),
               info);
 }
 
