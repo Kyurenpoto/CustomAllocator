@@ -7,18 +7,18 @@ namespace virtual_memory
     void *    alloc(std::size_t nPage);
     void      dealloc(void * addr);
 
-    struct AddrInfo
+    struct addr_info
     {
         std::size_t nPage;
 
-        enum class AddrState : bool
+        enum class addr_state : bool
         {
             DEALLOCATED,
             ALLOCATED
         };
 
-        AddrState state;
+        addr_state state;
     };
 
-    AddrInfo getAddrInfo(void * addr);
+    addr_info getAddrInfo(void * addr);
 }
