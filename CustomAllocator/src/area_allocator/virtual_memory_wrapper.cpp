@@ -24,24 +24,24 @@ void virtual_memory::dealloc(void * addr)
 
 namespace
 {
-    virtual_memory::AddrInfo::AddrState stateWin2Enum(DWORD state)
+    virtual_memory::addr_info::addr_state stateWin2Enum(DWORD state)
     {
         switch (state)
         {
         case MEM_RESERVE:
         case MEM_COMMIT:
-            return virtual_memory::AddrInfo::AddrState::ALLOCATED;
+            return virtual_memory::addr_info::addr_state::ALLOCATED;
         case MEM_FREE:
         default:
-            return virtual_memory::AddrInfo::AddrState::DEALLOCATED;
+            return virtual_memory::addr_info::addr_state::DEALLOCATED;
         }
     }
 }
 
-virtual_memory::AddrInfo virtual_memory::getAddrInfo(void * addr)
+virtual_memory::addr_info virtual_memory::getAddrInfo(void * addr)
 {
     MEMORY_BASIC_INFORMATION mbi;
     VirtualQuery(addr, &mbi, sizeof(mbi));
 
-    return AddrInfo{ mbi.RegionSize / PAGE_SIZE, stateWin2Enum(mbi.State) };
+    return addr_info{ mbi.RegionSize / PAGE_SIZE, stateWin2Enum(mbi.State) };
 }
