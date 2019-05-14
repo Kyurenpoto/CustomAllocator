@@ -28,14 +28,12 @@ namespace
     {
         switch (state)
         {
-        case MEM_FREE:
-            return virtual_memory::AddrInfo::AddrState::FREE;
         case MEM_RESERVE:
-            return virtual_memory::AddrInfo::AddrState::RESERVE;
         case MEM_COMMIT:
-            return virtual_memory::AddrInfo::AddrState::COMMIT;
+            return virtual_memory::AddrInfo::AddrState::ALLOCATED;
+        case MEM_FREE:
         default:
-            return virtual_memory::AddrInfo::AddrState::FREE;
+            return virtual_memory::AddrInfo::AddrState::DEALLOCATED;
         }
     }
 }

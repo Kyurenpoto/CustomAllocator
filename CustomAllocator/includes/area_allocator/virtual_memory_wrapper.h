@@ -11,11 +11,10 @@ namespace virtual_memory
     {
         std::size_t nPage;
 
-        enum class AddrState
+        enum class AddrState : bool
         {
-            FREE,
-            RESERVE,
-            COMMIT
+            DEALLOCATED,
+            ALLOCATED
         };
 
         AddrState state;

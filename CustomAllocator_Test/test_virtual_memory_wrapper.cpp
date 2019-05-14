@@ -2,8 +2,6 @@
 
 #include "../CustomAllocator/includes/area_allocator/virtual_memory_wrapper.h"
 
-#include <cstddef>
-
 namespace
 {
     struct tmp_class :
@@ -36,7 +34,7 @@ TEST_P(VirtualMemoryWrapperTest, isMemoryAllocated)
 
     ASSERT_EQ((tmp_class{
                   pageCnt,
-                  virtual_memory::AddrInfo::AddrState::COMMIT }),
+                  virtual_memory::AddrInfo::AddrState::ALLOCATED }),
               info);
 }
 
@@ -52,7 +50,7 @@ TEST_P(VirtualMemoryWrapperTest, isMemoryDeallocated)
 
     ASSERT_EQ((tmp_class{
                   pageCnt,
-                  virtual_memory::AddrInfo::AddrState::FREE }),
+                  virtual_memory::AddrInfo::AddrState::DEALLOCATED }),
               info);
 }
 
