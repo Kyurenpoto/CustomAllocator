@@ -2,14 +2,10 @@
 
 #include "../CustomAllocator/includes/area_allocator/virtual_memory_wrapper.h"
 
-#include <windows.h>
+#include <cstddef>
 
 namespace
 {
-    constexpr SIZE_T pageSize = 4 * 1024;
-	constexpr SIZE_T pageCntSmall = 16;
-	constexpr SIZE_T pageCntLarge = 1024 * 1024;
-
     struct tmp_class :
         public virtual_memory::AddrInfo
     {
@@ -24,60 +20,41 @@ namespace
     };
 }
 
-// TODO: Value-Parameterized Tests using gtest
+class VirtualMemoryWrapperTest :
+    public ::testing::TestWithParam<std::size_t>
+{};
 
-TEST(VirtualMemoryWrapperTest, isMemoryAllocated)
+TEST_P(VirtualMemoryWrapperTest, isMemoryAllocated)
 {
-    auto addr = virtual_memory::alloc(pageCntSmall);
+    auto pageCnt = GetParam();
+
+    auto addr = virtual_memory::alloc(pageCnt);
 
     auto info = virtual_memory::getAddrInfo(addr);
 
     virtual_memory::dealloc(addr);
 
     ASSERT_EQ((tmp_class{
-                  pageCntSmall,
+                  pageCnt,
                   virtual_memory::AddrInfo::AddrState::COMMIT }),
               info);
 }
 
-TEST(VirtualMemoryWrapperTest, isMemoryDeallocated)
+TEST_P(VirtualMemoryWrapperTest, isMemoryDeallocated)
 {
-    auto addr = virtual_memory::alloc(pageCntSmall);
+    auto pageCnt = GetParam();
+
+    auto addr = virtual_memory::alloc(pageCnt);
 
     virtual_memory::dealloc(addr);
 
     auto info = virtual_memory::getAddrInfo(addr);
 
     ASSERT_EQ((tmp_class{
-                  pageCntSmall,
+                  pageCnt,
                   virtual_memory::AddrInfo::AddrState::FREE }),
               info);
 }
 
-TEST(VirtualMemoryWrapperTest, isMemoryAllocatedLarge)
-{
-    auto addr = virtual_memory::alloc(pageCntLarge);
-
-    auto info = virtual_memory::getAddrInfo(addr);
-
-    virtual_memory::dealloc(addr);
-
-    ASSERT_EQ((tmp_class{
-                  pageCntLarge,
-                  virtual_memory::AddrInfo::AddrState::COMMIT }),
-              info);
-}
-
-TEST(VirtualMemoryWrapperTest, isMemoryDeallocatedLarge)
-{
-    auto addr = virtual_memory::alloc(pageCntLarge);
-
-    virtual_memory::dealloc(addr);
-
-    auto info = virtual_memory::getAddrInfo(addr);
-
-    ASSERT_EQ((tmp_class{
-                  pageCntLarge,
-                  virtual_memory::AddrInfo::AddrState::FREE }),
-              info);
-}
+INSTANTIATE_TEST_CASE_P(, VirtualMemoryWrapperTest,
+    ::testing::Values(16, 1024 * 1024),);
