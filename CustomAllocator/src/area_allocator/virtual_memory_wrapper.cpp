@@ -7,42 +7,41 @@ namespace
 	constexpr std::size_t PAGE_SIZE = 4 * 1024;
 }
 
-void * virtual_memory::reserve(std::size_t nPage)
+void* virtual_memory::alloc(std::size_t nPage)
 {
-	void* reserved = VirtualAlloc(nullptr, nPage * PAGE_SIZE, MEM_RESERVE, PAGE_READWRITE);
+    void * addr = VirtualAlloc(nullptr, nPage * PAGE_SIZE,
+                              MEM_COMMIT, PAGE_READWRITE);
 
-	if (reserved == nullptr)
-	{
-		abort();
-	}
+    assert(addr != nullptr);
 
-	return reserved;
+    return addr;
 }
 
-void * virtual_memory::commit(void * ptr, std::size_t nPage)
+void virtual_memory::dealloc(void * addr)
 {
-	void* commited = VirtualAlloc(ptr, nPage * PAGE_SIZE, MEM_COMMIT, PAGE_READWRITE);
-
-	if (commited == nullptr)
-	{
-		abort();
-	}
-
-	return commited;
+    assert(VirtualFree(addr, 0, MEM_RELEASE));
 }
 
-void virtual_memory::release(void * ptr)
+namespace
 {
-	if (VirtualFree(ptr, 0, MEM_RELEASE) == 0)
-	{
-		abort();
-	}
+    virtual_memory::AddrInfo::AddrState stateWin2Enum(DWORD state)
+    {
+        switch (state)
+        {
+        case MEM_RESERVE:
+        case MEM_COMMIT:
+            return virtual_memory::AddrInfo::AddrState::ALLOCATED;
+        case MEM_FREE:
+        default:
+            return virtual_memory::AddrInfo::AddrState::DEALLOCATED;
+        }
+    }
 }
 
-void virtual_memory::decommit(void * ptr, std::size_t nPage)
+virtual_memory::AddrInfo virtual_memory::getAddrInfo(void * addr)
 {
-	if (VirtualFree(ptr, nPage * PAGE_SIZE, MEM_DECOMMIT) == 0)
-	{
-		abort();
-	}
+    MEMORY_BASIC_INFORMATION mbi;
+    VirtualQuery(addr, &mbi, sizeof(mbi));
+
+    return AddrInfo{ mbi.RegionSize / PAGE_SIZE, stateWin2Enum(mbi.State) };
 }

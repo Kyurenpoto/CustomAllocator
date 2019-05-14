@@ -2,101 +2,57 @@
 
 #include "../CustomAllocator/includes/area_allocator/virtual_memory_wrapper.h"
 
-#include <windows.h>
-
-struct AddrInfo
-{
-	bool operator ==(const AddrInfo & other) const noexcept
-	{
-		return regionSize == other.regionSize && state == other.state;
-	}
-
-	SIZE_T regionSize;
-	DWORD state;
-};
-
 namespace
 {
-    constexpr SIZE_T pageSize = 4 * 1024;
-	constexpr SIZE_T pageCntSmall = 16;
-	constexpr SIZE_T pageCntLarge = 1024 * 1024;
+    struct tmp_class :
+        public virtual_memory::AddrInfo
+    {
+        bool operator == (const virtual_memory::AddrInfo& other) const
+        {
+            // The VirtualQuery function returns result of
+            // scanning memory from the given address,
+            // until the state of the page block changes.
+
+            return nPage <= other.nPage && state == other.state;
+        }
+    };
 }
 
-AddrInfo getAddrInfo(void * addr)
+class VirtualMemoryWrapperTest :
+    public ::testing::TestWithParam<std::size_t>
+{};
+
+TEST_P(VirtualMemoryWrapperTest, isMemoryAllocated)
 {
-	MEMORY_BASIC_INFORMATION mbi;
-	VirtualQuery(addr, &mbi, sizeof(mbi));
+    auto pageCnt = GetParam();
 
-	return AddrInfo{ mbi.RegionSize, mbi.State };
+    auto addr = virtual_memory::alloc(pageCnt);
+
+    auto info = virtual_memory::getAddrInfo(addr);
+
+    virtual_memory::dealloc(addr);
+
+    ASSERT_EQ((tmp_class{
+                  pageCnt,
+                  virtual_memory::AddrInfo::AddrState::ALLOCATED }),
+              info);
 }
 
-TEST(VirtualMemoryWrapperTest, isMemoryReserved)
+TEST_P(VirtualMemoryWrapperTest, isMemoryDeallocated)
 {
-	auto addr = virtual_memory::reserve(pageCntSmall);
-	
-	auto info = getAddrInfo(addr);
+    auto pageCnt = GetParam();
 
-	virtual_memory::release(addr);
+    auto addr = virtual_memory::alloc(pageCnt);
 
-	ASSERT_EQ((AddrInfo{ pageSize * pageCntSmall, MEM_RESERVE }), info);
+    virtual_memory::dealloc(addr);
+
+    auto info = virtual_memory::getAddrInfo(addr);
+
+    ASSERT_EQ((tmp_class{
+                  pageCnt,
+                  virtual_memory::AddrInfo::AddrState::DEALLOCATED }),
+              info);
 }
 
-TEST(VirtualMemoryWrapperTest, isMemoryReleased)
-{
-	auto addr = virtual_memory::reserve(pageCntSmall);
-
-	virtual_memory::release(addr);
-
-    auto info = getAddrInfo(addr);
-
-	ASSERT_EQ(MEM_FREE, info.state);
-}
-
-TEST(VirtualMemoryWrapperTest, isMemoryCommited)
-{
-	auto addr = virtual_memory::reserve(pageCntSmall);
-	virtual_memory::commit(addr, pageCntSmall);
-
-	auto info = getAddrInfo(addr);
-
-	virtual_memory::release(addr);
-
-	ASSERT_EQ((AddrInfo{ pageSize * pageCntSmall, MEM_COMMIT }), info);
-}
-
-TEST(VirtualMemoryWrapperTest, isMemoryDecommited)
-{
-	auto addr = virtual_memory::reserve(pageCntSmall);
-	virtual_memory::commit(addr, pageCntSmall);
-	virtual_memory::decommit(addr, pageCntSmall);
-
-	auto info = getAddrInfo(addr);
-
-	virtual_memory::release(addr);
-
-	ASSERT_EQ((AddrInfo{ pageSize * pageCntSmall, MEM_RESERVE }), info);
-}
-
-TEST(VirtualMemoryWrapperTest, isLargeMemoryReserved)
-{
-	auto addr = virtual_memory::reserve(pageCntLarge);
-
-	auto info = getAddrInfo(addr);
-
-	virtual_memory::release(addr);
-
-	ASSERT_EQ((AddrInfo{ pageSize * pageCntLarge, MEM_RESERVE }), info);
-}
-
-TEST(VirtualMemoryWrapperTest, isLargeMemoryCommited)
-{
-	auto addr = virtual_memory::reserve(pageCntLarge);
-	virtual_memory::commit(addr, pageCntLarge);
-
-	auto info = getAddrInfo(addr);
-
-	virtual_memory::decommit(addr, pageCntLarge);
-	virtual_memory::release(addr);
-
-	ASSERT_EQ((AddrInfo{ pageSize * pageCntLarge, MEM_COMMIT }), info);
-}
+INSTANTIATE_TEST_CASE_P(, VirtualMemoryWrapperTest,
+    ::testing::Values(16, 1024 * 1024),);
