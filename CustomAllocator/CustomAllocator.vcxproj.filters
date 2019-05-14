@@ -21,13 +21,19 @@
     <ClInclude Include="stdafx.h">
       <Filter>Pch</Filter>
     </ClInclude>
-    <ClInclude Include="memory_pool.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="includes\custom_allocator.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="virtual_memory_allocator.h">
+    <ClInclude Include="includes\area_allocator\virtual_memory_wrapper.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\area_allocator\area_allocator.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\area_allocator\memory_area.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="includes\area_allocator\area_manager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,10 +41,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Pch</Filter>
     </ClCompile>
-    <ClCompile Include="memory_pool.cpp">
+    <ClCompile Include="src\area_allocator\virtual_memory_wrapper.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="virtual_memory_allocator.cpp">
+    <ClCompile Include="src\area_allocator\area_allocator.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\area_allocator\area_manager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
