@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "memory_area.h"
+#include "area_info.h"
 
 namespace AreaAllocator
 {
@@ -19,20 +20,15 @@ namespace AreaAllocator
         public std::exception
     {};
 
-    enum class AreaResult
-    {
-        SUCCESSED,
-        ALREADY_INITIATED,
-        RUN_OUT,
-        EMPTY,
-        UNDEFINED
-    };
-
     void Initiate(const std::size_t sizeAreaMin,
                   const std::size_t sizeMemoryMax);
     void Dispose() noexcept;
-    void Allocate(memory_area & target);
-    void Deallocate(memory_area & target);
+    [[deprecated]]
+    void Allocate(memory_area& target);
+    void Allocate(std::size_t sizeArea);
+    [[deprecated]]
+    void Deallocate(memory_area& target);
+    void Deallocate(area_info & target);
 
 	std::size_t getSizeAreaMin();
 	std::size_t getSizeMemoryMax();

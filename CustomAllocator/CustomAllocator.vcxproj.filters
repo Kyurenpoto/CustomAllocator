@@ -36,6 +36,9 @@
     <ClInclude Include="includes\area_allocator\area_manager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="includes\area_allocator\area_info.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +51,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\area_allocator\area_manager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\area_allocator\area_info.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
