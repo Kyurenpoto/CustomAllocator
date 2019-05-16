@@ -101,3 +101,24 @@ namespace AreaAllocator
 		return allocator._sizeAllocated;
 	}
 }
+
+#include "includes/area_allocator/area_access.h"
+
+namespace AreaAccess
+{
+    void ConstructAt(const std::size_t id,
+                     const std::size_t offset,
+                     const std::size_t sizeType,
+                     std::function<void(void*)> constructor)
+    {
+
+    }
+
+    void DestructAt(const std::size_t id,
+                    const std::size_t offset,
+                    const std::size_t sizeType,
+                    std::function<void(void*)> destructor)
+    {
+
+    }
+}

@@ -25,7 +25,7 @@ namespace AreaAllocator
     void Dispose() noexcept;
     [[deprecated]]
     void Allocate(memory_area& target);
-    void Allocate(std::size_t sizeArea);
+    area_info Allocate(std::size_t sizeArea);
     [[deprecated]]
     void Deallocate(memory_area& target);
     void Deallocate(area_info & target);

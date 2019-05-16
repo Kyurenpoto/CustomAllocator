@@ -39,6 +39,9 @@
     <ClInclude Include="includes\area_allocator\area_info.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="includes\area_allocator\area_access.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

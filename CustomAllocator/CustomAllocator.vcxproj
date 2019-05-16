@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="includes\area_allocator\area_access.h" />
     <ClInclude Include="includes\area_allocator\area_allocator.h" />
     <ClInclude Include="includes\area_allocator\area_info.h" />
     <ClInclude Include="includes\area_allocator\area_manager.h" />
