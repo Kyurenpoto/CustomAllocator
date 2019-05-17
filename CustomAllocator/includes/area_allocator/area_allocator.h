@@ -20,15 +20,15 @@ namespace AreaAllocator
         public std::exception
     {};
 
-    void Initiate(const std::size_t sizeAreaMin,
+    void initiate(const std::size_t sizeAreaMin,
                   const std::size_t sizeMemoryMax);
-    void Dispose() noexcept;
+    void dispose() noexcept;
     [[deprecated]]
-    void Allocate(memory_area& target);
-    area_info Allocate(std::size_t sizeArea);
+    void allocate(memory_area& target);
+    area_info allocate(std::size_t sizeArea);
     [[deprecated]]
-    void Deallocate(memory_area& target);
-    void Deallocate(area_info & target);
+    void deallocate(memory_area& target);
+    void deallocate(area_info & target);
 
 	std::size_t getSizeAreaMin();
 	std::size_t getSizeMemoryMax();

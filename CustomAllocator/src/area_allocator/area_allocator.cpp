@@ -65,23 +65,23 @@ namespace
 
 namespace AreaAllocator
 {
-    void Initiate(const std::size_t sizeAreaMin,
+    void initiate(const std::size_t sizeAreaMin,
                   const std::size_t sizeMemoryMax)
     {
         allocator.initiate(sizeAreaMin, sizeMemoryMax);
     }
 
-    void Dispose() noexcept
+    void dispose() noexcept
     {
         allocator.dispose();
     }
 
-    void Allocate(memory_area & target)
+    void allocate(memory_area & target)
     {
         allocator.allocate(target);
     }
     
-    void Deallocate(memory_area & target)
+    void deallocate(memory_area & target)
     {
         allocator.deallocate(target);
     }
@@ -106,7 +106,7 @@ namespace AreaAllocator
 
 namespace AreaAccess
 {
-    void ConstructAt(const std::size_t id,
+    void constructAt(const std::size_t id,
                      const std::size_t offset,
                      const std::size_t sizeType,
                      std::function<void(void*)> constructor)
@@ -114,11 +114,16 @@ namespace AreaAccess
 
     }
 
-    void DestructAt(const std::size_t id,
+    void destructAt(const std::size_t id,
                     const std::size_t offset,
                     const std::size_t sizeType,
                     std::function<void(void*)> destructor)
     {
 
+    }
+
+    std::size_t getSizeTotal(const std::size_t id)
+    {
+        return 0;
     }
 }
