@@ -18,7 +18,7 @@ protected:
     }
 };
 
-TEST_F(AreaAllocatorTest, isInitiated)
+TEST_F(AreaAllocatorTest, isInitialized)
 {
     ASSERT_NO_THROW(AreaAllocator::initiate(SIZE_AREA, SIZE_MEMORY));
 
@@ -31,7 +31,7 @@ TEST_F(AreaAllocatorTest, isInitiated)
     ASSERT_EQ(sizeMemoryMax, SIZE_MEMORY);
 }
 
-TEST_F(AreaAllocatorTest, isAlreadyInitiated)
+TEST_F(AreaAllocatorTest, isAlreadyInitialized)
 {
     AreaAllocator::initiate(SIZE_AREA, SIZE_MEMORY);
     

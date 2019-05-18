@@ -52,6 +52,7 @@ void area_manager::deallocate(uint32_t id)
 const std::size_t area_manager::getSizeArea(const uint32_t id) const noexcept
 {
     assert(_size > 0);
+    assert(id < _size);
 
     return _sizeArea[id];
 }

@@ -29,7 +29,7 @@ namespace
             return _sizeAreaMin == 0 && _sizeMemoryMax == 0;
         }
 
-        void initiate(std::size_t sizeAreaMin, std::size_t sizeMemoryMax)
+        void initialize(std::size_t sizeAreaMin, std::size_t sizeMemoryMax)
         {
             if (!isInitiatable())
                 throw AreaAllocator::allocator_already_initiated{};
@@ -59,7 +59,7 @@ namespace AreaAllocator
     void initiate(const std::size_t sizeAreaMin,
                   const std::size_t sizeMemoryMax)
     {
-        allocator.initiate(sizeAreaMin, sizeMemoryMax);
+        allocator.initialize(sizeAreaMin, sizeMemoryMax);
     }
 
     void dispose() noexcept
