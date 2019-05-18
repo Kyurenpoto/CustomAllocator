@@ -16,11 +16,19 @@ struct area_manager
 
     uint32_t allocate(std::size_t nPage);
     void deallocate(uint32_t id);
+    void constructAt(const std::size_t id,
+                     const std::size_t offset,
+                     const std::size_t sizeType,
+                     std::function<void(void*)> constructor);
+    void destructAt(const std::size_t id,
+                    const std::size_t offset,
+                    const std::size_t sizeType,
+                    std::function<void(void*)> destructor)
 
     const std::size_t getSizeArea(const uint32_t id) const noexcept;
 
 private:
-    bool isInitialState();
+    bool isInitialState() const noexcept;
 
 private:
     uint32_t _size = 0;

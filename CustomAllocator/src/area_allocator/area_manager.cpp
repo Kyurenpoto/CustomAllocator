@@ -47,6 +47,8 @@ uint32_t area_manager::allocate(std::size_t nPage)
 void area_manager::deallocate(uint32_t id)
 {
     assert(_size > 0);
+
+    _sizeArea[id] = 1;
 }
 
 const std::size_t area_manager::getSizeArea(const uint32_t id) const noexcept
@@ -57,7 +59,7 @@ const std::size_t area_manager::getSizeArea(const uint32_t id) const noexcept
     return _sizeArea[id];
 }
 
-bool area_manager::isInitialState()
+bool area_manager::isInitialState() const noexcept
 {
     assert(_size > 0);
 
