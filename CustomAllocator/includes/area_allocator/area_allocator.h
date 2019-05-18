@@ -3,7 +3,6 @@
 #include <cstddef>
 #include <stdexcept>
 
-#include "memory_area.h"
 #include "area_info.h"
 
 namespace AreaAllocator
@@ -23,11 +22,7 @@ namespace AreaAllocator
     void initiate(const std::size_t sizeAreaMin,
                   const std::size_t sizeMemoryMax);
     void dispose() noexcept;
-    [[deprecated]]
-    void allocate(memory_area& target);
     area_info allocate(std::size_t sizeArea);
-    [[deprecated]]
-    void deallocate(memory_area& target);
     void deallocate(area_info & target);
 
 	std::size_t getSizeAreaMin();

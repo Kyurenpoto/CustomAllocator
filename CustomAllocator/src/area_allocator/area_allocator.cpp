@@ -7,7 +7,6 @@ namespace
 {
     constexpr std::size_t SIZE_PAGE = 4 * 1024;
     constexpr std::size_t SIZE_AREA_MIN = 64 * 1024;
-    constexpr std::size_t SIZE_AREA_MAX = 4ull * 1024 * 1024 * 1024;
 
     std::size_t unitize(const std::size_t target, const std::size_t unit)
     {
@@ -43,14 +42,6 @@ namespace
         {
             _sizeAreaMin = _sizeMemoryMax = 0;
         }
-        
-        void allocate(AreaAllocator::memory_area & target)
-        {
-        }
-        
-        void deallocate(AreaAllocator::memory_area & target)
-        {
-        }
 
     public:
         std::size_t _sizeAreaMin = 0;
@@ -74,16 +65,6 @@ namespace AreaAllocator
     void dispose() noexcept
     {
         allocator.dispose();
-    }
-
-    void allocate(memory_area & target)
-    {
-        allocator.allocate(target);
-    }
-    
-    void deallocate(memory_area & target)
-    {
-        allocator.deallocate(target);
     }
 
 	std::size_t getSizeAreaMin()

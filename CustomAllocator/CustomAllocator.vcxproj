@@ -23,7 +23,6 @@
     <ClInclude Include="includes\area_allocator\area_allocator.h" />
     <ClInclude Include="includes\area_allocator\area_info.h" />
     <ClInclude Include="includes\area_allocator\area_manager.h" />
-    <ClInclude Include="includes\area_allocator\memory_area.h" />
     <ClInclude Include="includes\area_allocator\virtual_memory_wrapper.h" />
     <ClInclude Include="includes\custom_allocator.h" />
     <ClInclude Include="stdafx.h" />

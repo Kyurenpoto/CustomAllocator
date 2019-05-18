@@ -1,7 +1,5 @@
 #pragma once
 
-#include "memory_area.h"
-
 #include <vector>
 
 struct area_manager
@@ -19,7 +17,7 @@ struct area_manager
     uint32_t allocate(std::size_t nPage);
     void deallocate(uint32_t id);
 
-    const AreaAllocator::memory_area & operator [] (const uint32_t id) const;
+    const std::size_t getSizeArea(const uint32_t id) const noexcept;
 
 private:
     bool isInitialState();
@@ -30,5 +28,6 @@ private:
     std::vector<uint32_t> _idNext;
     std::vector<uint32_t> _idPrev;
 
-    std::vector<AreaAllocator::memory_area> _areas;
+    std::vector<std::size_t> _sizeArea;
+    std::vector<void *> _locArea;
 };
