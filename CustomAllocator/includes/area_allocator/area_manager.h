@@ -2,6 +2,8 @@
 
 #include "memory_area.h"
 
+#include <vector>
+
 struct area_manager
 {
     area_manager() = default;
@@ -24,9 +26,9 @@ private:
 
 private:
     uint32_t _size = 0;
-    
-    uint32_t * _idNext = nullptr;
-    uint32_t * _idPrev = nullptr;
 
-    AreaAllocator::memory_area * _areas = nullptr;
+    std::vector<uint32_t> _idNext;
+    std::vector<uint32_t> _idPrev;
+
+    std::vector<AreaAllocator::memory_area> _areas;
 };

@@ -13,9 +13,9 @@ void area_manager::initialize(const uint32_t size)
 
     _size = size;
 
-    _idNext = new uint32_t[size];
-    _idPrev = new uint32_t[size];
-    _areas = new AreaAllocator::memory_area[size];
+    _idNext.resize(size);
+    _idPrev.resize(size);
+    _areas.resize(size);
 
     _idNext[1] = 1;
 }
@@ -29,10 +29,6 @@ void area_manager::dispose()
         deallocate(_idNext[1]);
 
     _size = 0;
-
-    delete[] _idNext;
-    delete[] _idPrev;
-    delete[] _areas;
 }
 
 uint32_t area_manager::allocate(std::size_t nPage)
