@@ -2,6 +2,30 @@
 
 #include "includes/area_allocator/area_manager.h"
 
+namespace
+{
+    constexpr std::size_t SIZE_CACHE_LINE = 64;
+
+    struct alignas(SIZE_CACHE_LINE) chunk_header
+    {
+        std::size_t _idChunk;
+        std::size_t _sizeAlign;
+        chunk_header* _next;
+        chunk_header* _prev;
+    };
+
+    struct alignas(SIZE_CACHE_LINE) area_header
+    {
+        std::size_t _idArea;
+        std::size_t _sizeArea;
+        std::size_t _sizeUsed;
+        std::size_t _cntChunk;
+        area_header* _next;
+        area_header* _prev;
+        chunk_header* _chunk;
+    };
+}
+
 area_manager::~area_manager()
 {
     dispose();
