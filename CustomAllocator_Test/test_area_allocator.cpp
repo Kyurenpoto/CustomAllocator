@@ -14,18 +14,18 @@ class AreaAllocatorTest :
 protected:
     virtual void SetUp()
     {
-        AreaAllocator::dispose();
+        area_allocator::dispose();
     }
 };
 
 TEST_F(AreaAllocatorTest, isInitialized)
 {
-    ASSERT_NO_THROW(AreaAllocator::initiate(SIZE_AREA, SIZE_MEMORY));
+    ASSERT_NO_THROW(area_allocator::initiate(SIZE_AREA, SIZE_MEMORY));
 
-	std::size_t sizeAreaMin = AreaAllocator::getSizeAreaMin();
-	std::size_t sizeMemoryMax = AreaAllocator::getSizeMemoryMax();
+	std::size_t sizeAreaMin = area_allocator::getSizeAreaMin();
+	std::size_t sizeMemoryMax = area_allocator::getSizeMemoryMax();
 
-	AreaAllocator::dispose();
+	area_allocator::dispose();
 
 	ASSERT_EQ(sizeAreaMin, SIZE_AREA);
     ASSERT_EQ(sizeMemoryMax, SIZE_MEMORY);
@@ -33,20 +33,20 @@ TEST_F(AreaAllocatorTest, isInitialized)
 
 TEST_F(AreaAllocatorTest, isAlreadyInitialized)
 {
-    AreaAllocator::initiate(SIZE_AREA, SIZE_MEMORY);
+    area_allocator::initiate(SIZE_AREA, SIZE_MEMORY);
     
-    ASSERT_THROW(AreaAllocator::initiate(SIZE_AREA, SIZE_MEMORY),
-                 AreaAllocator::allocator_already_initiated);
+    ASSERT_THROW(area_allocator::initiate(SIZE_AREA, SIZE_MEMORY),
+                 area_allocator::allocator_already_initiated);
 }
 
 TEST_F(AreaAllocatorTest, isDisposed)
 {
-    AreaAllocator::initiate(SIZE_AREA, SIZE_MEMORY);
+    area_allocator::initiate(SIZE_AREA, SIZE_MEMORY);
 
-    ASSERT_NO_THROW(AreaAllocator::dispose());
+    ASSERT_NO_THROW(area_allocator::dispose());
 
-    std::size_t sizeAreaMin = AreaAllocator::getSizeAreaMin();
-    std::size_t sizeMemoryMax = AreaAllocator::getSizeMemoryMax();
+    std::size_t sizeAreaMin = area_allocator::getSizeAreaMin();
+    std::size_t sizeMemoryMax = area_allocator::getSizeMemoryMax();
 
     ASSERT_EQ(sizeAreaMin, 0);
     ASSERT_EQ(sizeMemoryMax, 0);

@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <functional>
 
-namespace AreaAccess
+namespace area_access
 {
     void constructAt(const std::size_t id,
                      const std::size_t offset,

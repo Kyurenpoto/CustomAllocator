@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <functional>
 
 struct area_manager
 {
@@ -23,7 +24,7 @@ struct area_manager
     void destructAt(const std::size_t id,
                     const std::size_t offset,
                     const std::size_t sizeType,
-                    std::function<void(void*)> destructor)
+                    std::function<void(void*)> destructor);
 
     const std::size_t getSizeArea(const uint32_t id) const noexcept;
 

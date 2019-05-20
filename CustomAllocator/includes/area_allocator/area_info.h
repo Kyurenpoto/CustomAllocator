@@ -4,7 +4,7 @@
 #include <functional>
 #include <new>
 
-namespace AreaAllocator
+namespace area_allocator
 {
     struct area_info
     {

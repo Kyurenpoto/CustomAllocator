@@ -15,11 +15,11 @@ namespace
         return target - target % unit;
     }
 
-    struct area_allocator
+    struct area_allocator_impl
     {
-        area_allocator() = default;
+        area_allocator_impl() = default;
 
-        ~area_allocator()
+        ~area_allocator_impl()
         {
             dispose();
         }
@@ -32,7 +32,7 @@ namespace
         void initialize(std::size_t sizeAreaMin, std::size_t sizeMemoryMax)
         {
             if (!isInitiatable())
-                throw AreaAllocator::allocator_already_initiated{};
+                throw area_allocator::allocator_already_initiated{};
 
             _sizeAreaMin = unitize(sizeAreaMin, SIZE_PAGE);
             _sizeMemoryMax = unitize(sizeMemoryMax, _sizeAreaMin);
@@ -51,10 +51,10 @@ namespace
         area_manager areas;
     };
 
-    static area_allocator allocator;
+    static area_allocator_impl allocator;
 }
 
-namespace AreaAllocator
+namespace area_allocator
 {
     void initiate(const std::size_t sizeAreaMin,
                   const std::size_t sizeMemoryMax)
@@ -85,7 +85,7 @@ namespace AreaAllocator
 
 #include "includes/area_allocator/area_access.h"
 
-namespace AreaAccess
+namespace area_access
 {
     void constructAt(const std::size_t id,
                      const std::size_t offset,

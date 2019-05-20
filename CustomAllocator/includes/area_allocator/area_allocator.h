@@ -5,7 +5,7 @@
 
 #include "area_info.h"
 
-namespace AreaAllocator
+namespace area_allocator
 {
     struct allocator_already_initiated :
         public std::exception
