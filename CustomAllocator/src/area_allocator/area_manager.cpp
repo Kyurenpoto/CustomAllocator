@@ -1,28 +1,41 @@
 #include "stdafx.h"
 
 #include "includes/area_allocator/area_manager.h"
+#include "includes/area_allocator/virtual_memory_wrapper.h"
 
 namespace
 {
     constexpr std::size_t SIZE_CACHE_LINE = 64;
+    constexpr std::size_t CNT_PAGE_MIN = 8;
 
-    struct alignas(SIZE_CACHE_LINE) chunk_header
+    struct chunk_header
     {
         std::size_t _idChunk;
         std::size_t _sizeAlign;
-        chunk_header* _next;
-        chunk_header* _prev;
+        chunk_header * _nextChunk;
+        chunk_header * _prevChunk;
     };
 
-    struct alignas(SIZE_CACHE_LINE) area_header
+    struct area_header
     {
         std::size_t _idArea;
-        std::size_t _sizeArea;
-        std::size_t _sizeUsed;
-        std::size_t _cntChunk;
-        area_header* _next;
-        area_header* _prev;
-        chunk_header* _chunk;
+        std::size_t _cntChunkTotal;
+        std::size_t _cntChunkUsed;
+        area_header * _nextArea;
+        area_header * _prevArea;
+        chunk_header * _activeChunk;
+        chunk_header * _inactiveChunk;
+    };
+
+    struct area_manage_header
+    {
+        std::size_t _idManage;
+        std::size_t _cntAreaTotal;
+        std::size_t _cntAreaUsed;
+        area_manage_header * _nextManage;
+        area_manage_header * _prevManage;
+        area_header * _activeArea;
+        area_header * _inactiveArea;
     };
 }
 

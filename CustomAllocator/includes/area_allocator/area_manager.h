@@ -39,4 +39,6 @@ private:
 
     std::vector<std::size_t> _sizeArea;
     std::vector<void *> _locArea;
+
+    void * _areas = nullptr;
 };
