@@ -6,7 +6,15 @@
 namespace
 {
     constexpr std::size_t SIZE_CACHE_LINE = 64;
-    constexpr std::size_t CNT_PAGE_MIN = 8;
+    constexpr std::size_t SIZE_PAGE_MIN = 4 * 1024;
+    constexpr std::size_t SIZE_AREA_MANAGER = 2 * 1024 * 1024;
+    constexpr std::size_t CNT_PAGE_AREA_MANAGER =
+        SIZE_AREA_MANAGER / SIZE_PAGE_MIN;
+
+    struct cache_line
+    {
+        char data[SIZE_CACHE_LINE];
+    };
 
     struct chunk_header
     {
@@ -37,6 +45,27 @@ namespace
         area_header * _activeArea;
         area_header * _inactiveArea;
     };
+
+    constexpr std::size_t CNT_CHUNK_AREA_MANAGER = 
+        SIZE_AREA_MANAGER / SIZE_CACHE_LINE - 3;
+
+    void initAreaManager(area_manage_header * memory, std::size_t id)
+    {
+        assert(virtual_memory::getAddrInfo(memory).nPage >=
+               CNT_PAGE_AREA_MANAGER);
+
+        auto * tmp = reinterpret_cast<cache_line *>(memory);
+        std::fill_n(tmp, CNT_CHUNK_AREA_MANAGER + 3, 0);
+
+        memory->_idManage = id;
+        memory->_cntAreaTotal = CNT_CHUNK_AREA_MANAGER;
+        memory->_cntAreaUsed = 0;
+        memory->_nextManage = memory->_prevManage = memory;
+        memory->_activeArea = reinterpret_cast<area_header *>(
+                                  reinterpret_cast<cache_line*>(memory) + 1);
+        memory->_inactiveArea = reinterpret_cast<area_header*>(
+                                    reinterpret_cast<cache_line*>(memory) + 2);
+    }
 }
 
 area_manager::~area_manager()
@@ -46,32 +75,16 @@ area_manager::~area_manager()
 
 void area_manager::initialize(const uint32_t size)
 {
-    assert(size > 0);
+}
 
-    _size = size;
-
-    _idNext.resize(static_cast<std::size_t>(size) + 2);
-    _idPrev.resize(static_cast<std::size_t>(size) + 2);
-    _sizeArea.resize(size);
-    _locArea.resize(size);
-
-    _idNext[1] = 1;
+void area_manager::initialize()
+{
+    _areas = virtual_memory::alloc(CNT_PAGE_AREA_MANAGER);
 }
 
 void area_manager::dispose()
 {
-    if (_size == 0)
-        return;
-
-    while (!isInitialState())
-        deallocate(_idNext[1]);
-
-    _size = 0;
-
-    _idNext.resize(0);
-    _idPrev.resize(0);
-    _sizeArea.resize(0);
-    _locArea.resize(0);
+    virtual_memory::dealloc(_areas);
 }
 
 uint32_t area_manager::allocate(std::size_t nPage)

@@ -13,6 +13,7 @@ struct area_manager
     ~area_manager();
 
     void initialize(const uint32_t size);
+    void initialize();
     void dispose();
 
     uint32_t allocate(std::size_t nPage);
