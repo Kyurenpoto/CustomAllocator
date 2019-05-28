@@ -7,9 +7,14 @@ namespace
 {
     constexpr std::size_t SIZE_CACHE_LINE = 64;
     constexpr std::size_t SIZE_PAGE_MIN = 4 * 1024;
-    constexpr std::size_t SIZE_AREA_MANAGER = 2 * 1024 * 1024;
-    constexpr std::size_t CNT_PAGE_AREA_MANAGER =
-        SIZE_AREA_MANAGER / SIZE_PAGE_MIN;
+
+    void initMemory(void * memory, const std::size_t size)
+    {
+        assert(memory != nullptr);
+        assert(virtual_memory::getAddrInfo(memory).nPage >= size);
+
+        std::memset(memory, 0, size);
+    }
 
     struct cache_line
     {
@@ -38,34 +43,46 @@ namespace
     struct area_manage_header
     {
         std::size_t _idManage;
-        std::size_t _cntAreaTotal;
         std::size_t _cntAreaUsed;
         area_manage_header * _nextManage;
         area_manage_header * _prevManage;
         area_header * _activeArea;
         area_header * _inactiveArea;
+
+        static constexpr std::size_t SIZE = 2 * 1024 * 1024;
+        static constexpr std::size_t CNT_PAGE = SIZE / SIZE_PAGE_MIN;
+        static constexpr std::size_t CNT_CHUNK = SIZE / SIZE_CACHE_LINE - 3;
+
+        area_manage_header(std::size_t id) :
+            _idManage{ id },
+            _cntAreaUsed{0},
+            _nextManage{this},
+            _prevManage{this},
+            _activeArea{ reinterpret_cast<area_header*>(
+                             reinterpret_cast<cache_line*>(this) + 1) },
+            _inactiveArea{ reinterpret_cast<area_header*>(
+                               reinterpret_cast<cache_line*>(this) + 2) }
+        {
+
+        }
+
+        ~area_manage_header() = default;
+
+        static void initialize(void * memory, std::size_t id)
+        {
+            initMemory(memory, area_manage_header::CNT_CHUNK + 3);
+
+            new(memory) area_manage_header{ id };
+        }
+
+        static void dispose(void * memory)
+        {
+            reinterpret_cast<area_manage_header *>(memory)->
+                ~area_manage_header();
+
+            initMemory(memory, area_manage_header::CNT_CHUNK + 3);
+        }
     };
-
-    constexpr std::size_t CNT_CHUNK_AREA_MANAGER = 
-        SIZE_AREA_MANAGER / SIZE_CACHE_LINE - 3;
-
-    void initAreaManager(area_manage_header * memory, std::size_t id)
-    {
-        assert(virtual_memory::getAddrInfo(memory).nPage >=
-               CNT_PAGE_AREA_MANAGER);
-
-        auto * tmp = reinterpret_cast<cache_line *>(memory);
-        std::fill_n(tmp, CNT_CHUNK_AREA_MANAGER + 3, 0);
-
-        memory->_idManage = id;
-        memory->_cntAreaTotal = CNT_CHUNK_AREA_MANAGER;
-        memory->_cntAreaUsed = 0;
-        memory->_nextManage = memory->_prevManage = memory;
-        memory->_activeArea = reinterpret_cast<area_header *>(
-                                  reinterpret_cast<cache_line*>(memory) + 1);
-        memory->_inactiveArea = reinterpret_cast<area_header*>(
-                                    reinterpret_cast<cache_line*>(memory) + 2);
-    }
 }
 
 area_manager::~area_manager()
@@ -79,7 +96,9 @@ void area_manager::initialize(const uint32_t size)
 
 void area_manager::initialize()
 {
-    _areas = virtual_memory::alloc(CNT_PAGE_AREA_MANAGER);
+    _areas = virtual_memory::alloc(area_manage_header::CNT_PAGE);
+
+    area_manage_header::initialize(_areas, 0);
 }
 
 void area_manager::dispose()
