@@ -82,6 +82,26 @@ namespace
 
             initMemory(memory, area_manage_header::CNT_CHUNK + 3);
         }
+
+        void addActiveArea(std::size_t idArea)
+        {
+            assert(idArea < area_manage_header::CNT_CHUNK);
+        }
+
+        void removeActiveArea(std::size_t idArea)
+        {
+            assert(idArea < area_manage_header::CNT_CHUNK);
+        }
+
+        void addInactiveArea(std::size_t idArea)
+        {
+            assert(idArea < area_manage_header::CNT_CHUNK);
+        }
+
+        void removeInactiveArea(std::size_t idArea)
+        {
+            assert(idArea < area_manage_header::CNT_CHUNK);
+        }
     };
 }
 
@@ -103,6 +123,8 @@ void area_manager::initialize()
 
 void area_manager::dispose()
 {
+    area_manage_header::dispose(_areas);
+
     virtual_memory::dealloc(_areas);
 }
 
