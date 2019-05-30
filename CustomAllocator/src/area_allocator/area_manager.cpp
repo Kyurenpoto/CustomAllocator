@@ -3,6 +3,8 @@
 #include "includes/area_allocator/area_manager.h"
 #include "includes/area_allocator/virtual_memory_wrapper.h"
 
+#include <type_traits>
+
 namespace
 {
     constexpr std::size_t SIZE_CACHE_LINE = 64;
@@ -28,6 +30,25 @@ namespace
         chunk_header * _nextChunk;
         chunk_header * _prevChunk;
     };
+    
+    template<class AreaHeader>
+    struct area_base
+    {
+        static void initialize(void * memory, std::size_t id)
+        {
+            initMemory(memory, AreaHeader::SIZE);
+
+            new(memory) AreaHeader{ id };
+        }
+
+        static void dispose(void * memory)
+        {
+            static_cast<AreaHeader *>(memory)->
+                ~AreaHeader();
+
+            initMemory(memory, AreaHeader::SIZE);
+        }
+    };
 
     struct area_header
     {
@@ -36,69 +57,45 @@ namespace
         std::size_t _cntChunkUsed;
         area_header * _nextArea;
         area_header * _prevArea;
-        chunk_header * _activeChunk;
-        chunk_header * _inactiveChunk;
     };
 
-    struct area_manage_header
+    struct area_manage_header :
+        public area_base<area_manage_header>
     {
         std::size_t _idManage;
         std::size_t _cntAreaUsed;
-        area_manage_header * _nextManage;
-        area_manage_header * _prevManage;
-        area_header * _activeArea;
-        area_header * _inactiveArea;
+        area_manage_header * _nextManage = nullptr;
+        area_manage_header * _prevManage = nullptr;
 
         static constexpr std::size_t SIZE = 2 * 1024 * 1024;
         static constexpr std::size_t CNT_PAGE = SIZE / SIZE_PAGE_MIN;
         static constexpr std::size_t CNT_CHUNK = SIZE / SIZE_CACHE_LINE - 3;
 
-        area_manage_header(std::size_t id) :
+        area_manage_header(std::size_t id) noexcept :
             _idManage{ id },
-            _cntAreaUsed{0},
-            _nextManage{this},
-            _prevManage{this},
-            _activeArea{ reinterpret_cast<area_header*>(
-                             reinterpret_cast<cache_line*>(this) + 1) },
-            _inactiveArea{ reinterpret_cast<area_header*>(
-                               reinterpret_cast<cache_line*>(this) + 2) }
+            _cntAreaUsed{ 0 }
         {
-
+            _nextManage = _prevManage = this;
         }
 
         ~area_manage_header() = default;
 
-        static void initialize(void * memory, std::size_t id)
-        {
-            initMemory(memory, area_manage_header::CNT_CHUNK + 3);
-
-            new(memory) area_manage_header{ id };
-        }
-
-        static void dispose(void * memory)
-        {
-            reinterpret_cast<area_manage_header *>(memory)->
-                ~area_manage_header();
-
-            initMemory(memory, area_manage_header::CNT_CHUNK + 3);
-        }
-
-        void addActiveArea(std::size_t idArea)
+        void addActiveArea(std::size_t idArea) noexcept
         {
             assert(idArea < area_manage_header::CNT_CHUNK);
         }
 
-        void removeActiveArea(std::size_t idArea)
+        void removeActiveArea(std::size_t idArea) noexcept
         {
             assert(idArea < area_manage_header::CNT_CHUNK);
         }
 
-        void addInactiveArea(std::size_t idArea)
+        void addInactiveArea(std::size_t idArea) noexcept
         {
             assert(idArea < area_manage_header::CNT_CHUNK);
         }
 
-        void removeInactiveArea(std::size_t idArea)
+        void removeInactiveArea(std::size_t idArea) noexcept
         {
             assert(idArea < area_manage_header::CNT_CHUNK);
         }

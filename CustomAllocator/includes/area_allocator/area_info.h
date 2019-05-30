@@ -22,7 +22,7 @@ namespace area_allocator
         }
 
         virtual std::size_t getSizeUsed() const noexcept;
-        std::size_t getSizeTotal() const noexcept;
+        std::size_t getSizeTotal() const;
         std::size_t getAreaId() const noexcept;
 
     protected:

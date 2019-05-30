@@ -8,7 +8,7 @@ namespace
     constexpr std::size_t SIZE_PAGE = 4 * 1024;
     constexpr std::size_t SIZE_AREA_MIN = 64 * 1024;
 
-    std::size_t unitize(const std::size_t target, const std::size_t unit)
+    std::size_t unitize(const std::size_t target, const std::size_t unit) noexcept
     {
         assert(unit > 0 && target > unit);
 
@@ -36,11 +36,15 @@ namespace
 
             _sizeAreaMin = unitize(sizeAreaMin, SIZE_PAGE);
             _sizeMemoryMax = unitize(sizeMemoryMax, _sizeAreaMin);
+
+            areas.initialize();
         }
         
-        void dispose()
+        void dispose() noexcept
         {
             _sizeAreaMin = _sizeMemoryMax = 0;
+
+            areas.dispose();
         }
 
     public:

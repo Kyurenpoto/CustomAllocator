@@ -3,7 +3,7 @@
 #include "includes/area_allocator/area_info.h"
 #include "includes/area_allocator/area_access.h"
 
-std::size_t area_allocator::area_info::getSizeTotal() const noexcept
+std::size_t area_allocator::area_info::getSizeTotal() const
 {
     return area_access::getSizeTotal(_areaId);
 }
