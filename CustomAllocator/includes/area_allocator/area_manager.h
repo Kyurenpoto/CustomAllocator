@@ -10,14 +10,13 @@ struct area_manager
     area_manager(area_manager &&) = delete;
     area_manager & operator = (const area_manager &) = delete;
     area_manager & operator = (area_manager &&) = delete;
-    ~area_manager();
+    ~area_manager() noexcept;
 
-    void initialize(const uint32_t size);
-    void initialize();
-    void dispose();
+    void initialize() noexcept;
+    void dispose() noexcept;
 
-    uint32_t allocate(std::size_t nPage);
-    void deallocate(uint32_t id);
+    uint32_t allocate(std::size_t nPage) noexcept;
+    void deallocate(uint32_t id) noexcept;
     void constructAt(const std::size_t id,
                      const std::size_t offset,
                      const std::size_t sizeType,

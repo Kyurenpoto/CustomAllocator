@@ -3,14 +3,15 @@
 #include "includes/area_allocator/area_manager.h"
 #include "includes/area_allocator/virtual_memory_wrapper.h"
 
-#include <type_traits>
+#include <array>
+#include <variant>
 
 namespace
 {
     constexpr std::size_t SIZE_CACHE_LINE = 64;
     constexpr std::size_t SIZE_PAGE_MIN = 4 * 1024;
 
-    void initMemory(void * memory, const std::size_t size)
+    void initMemory(void * memory, const std::size_t size) noexcept
     {
         assert(memory != nullptr);
         assert(virtual_memory::getAddrInfo(memory).nPage >= size);
@@ -30,109 +31,93 @@ namespace
         chunk_header * _nextChunk;
         chunk_header * _prevChunk;
     };
-    
-    template<class AreaHeader>
-    struct area_base
-    {
-        static void initialize(void * memory, std::size_t id)
-        {
-            initMemory(memory, AreaHeader::SIZE);
 
-            new(memory) AreaHeader{ id };
-        }
-
-        static void dispose(void * memory)
-        {
-            static_cast<AreaHeader *>(memory)->
-                ~AreaHeader();
-
-            initMemory(memory, AreaHeader::SIZE);
-        }
-    };
+    struct index_header;
 
     struct area_header
     {
         std::size_t _idArea;
         std::size_t _cntChunkTotal;
         std::size_t _cntChunkUsed;
-        area_header * _nextArea;
-        area_header * _prevArea;
+        index_header * _index;
     };
 
-    struct area_manage_header :
-        public area_base<area_manage_header>
+    struct index_header
+    {
+        area_header * _area;
+        index_header * _root;
+        uint32_t _idArea;
+        uint32_t _parent;
+        uint32_t _left;
+        uint32_t _right;
+    };
+
+    struct manage_header
     {
         std::size_t _idManage;
         std::size_t _cntAreaUsed;
-        area_manage_header * _nextManage = nullptr;
-        area_manage_header * _prevManage = nullptr;
+        manage_header * _nextManage;
+        manage_header * _prevManage;
+    };
 
+    struct manage_area
+    {
         static constexpr std::size_t SIZE = 2 * 1024 * 1024;
         static constexpr std::size_t CNT_PAGE = SIZE / SIZE_PAGE_MIN;
-        static constexpr std::size_t CNT_CHUNK = SIZE / SIZE_CACHE_LINE - 3;
+        static constexpr std::size_t CNT_CHUNK = SIZE / SIZE_CACHE_LINE * 2 - 1;
 
-        area_manage_header(std::size_t id) noexcept :
-            _idManage{ id },
-            _cntAreaUsed{ 0 }
+        static void initialize(manage_area * area, std::size_t id) noexcept
         {
-            _nextManage = _prevManage = this;
+            initMemory(area, SIZE);
+
+            std::variant<manage_area *, manage_header *> tmp = area;
+            manage_header * header = std::get<manage_header*>(tmp);
+
+            header->_idManage = id;
+            header->_nextManage = header->_prevManage = header;
         }
 
-        ~area_manage_header() = default;
-
-        void addActiveArea(std::size_t idArea) noexcept
+        static void dispose(manage_area * area) noexcept
         {
-            assert(idArea < area_manage_header::CNT_CHUNK);
+            initMemory(area, SIZE);
         }
 
-        void removeActiveArea(std::size_t idArea) noexcept
-        {
-            assert(idArea < area_manage_header::CNT_CHUNK);
-        }
-
-        void addInactiveArea(std::size_t idArea) noexcept
-        {
-            assert(idArea < area_manage_header::CNT_CHUNK);
-        }
-
-        void removeInactiveArea(std::size_t idArea) noexcept
-        {
-            assert(idArea < area_manage_header::CNT_CHUNK);
-        }
+        manage_header _header;
+        std::array<index_header, CNT_CHUNK> _chunks;
     };
 }
 
-area_manager::~area_manager()
+area_manager::~area_manager() noexcept
 {
     dispose();
 }
 
-void area_manager::initialize(const uint32_t size)
+void area_manager::initialize() noexcept
 {
+    assert(_areas == nullptr);
+
+    _areas = virtual_memory::alloc(manage_area::CNT_PAGE);
+
+    manage_area::initialize(static_cast<manage_area*>(_areas), 0);
 }
 
-void area_manager::initialize()
+void area_manager::dispose() noexcept
 {
-    _areas = virtual_memory::alloc(area_manage_header::CNT_PAGE);
+    assert(_areas != nullptr);
 
-    area_manage_header::initialize(_areas, 0);
-}
-
-void area_manager::dispose()
-{
-    area_manage_header::dispose(_areas);
+    manage_area::dispose(static_cast<manage_area*>(_areas));
 
     virtual_memory::dealloc(_areas);
 }
 
-uint32_t area_manager::allocate(std::size_t nPage)
+uint32_t area_manager::allocate(std::size_t nPage) noexcept
 {
     assert(_size > 0);
 
     return 0;
 }
 
-void area_manager::deallocate(uint32_t id)
+void area_manager::deallocate(uint32_t id) noexcept
 {
     assert(_size > 0);
 
