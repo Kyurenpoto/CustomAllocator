@@ -86,12 +86,13 @@ namespace
 
         bool isOverflow() const noexcept
         {
-            return false;
+            return _header._cntAreaUsed < CNT_CHUNK ||
+                   _chunks[1]._root != &_chunks[1];
         }
 
         bool isUnderflow() const noexcept
         {
-            return false;
+            return _header._cntAreaUsed == 0;
         }
 
         uint32_t addArea(const memory_area * area) const noexcept
