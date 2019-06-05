@@ -42,6 +42,8 @@ namespace
         index_header * _index;
     };
 
+    using memory_area = cache_line;
+
     struct index_header
     {
         area_header * _area;
@@ -55,7 +57,8 @@ namespace
     struct manage_header
     {
         std::size_t _idManage;
-        std::size_t _cntAreaUsed;
+        uint32_t _cntAreaUsed;
+        uint32_t _cntIndexUsed;
         manage_header * _nextManage;
         manage_header * _prevManage;
     };
@@ -70,8 +73,7 @@ namespace
         {
             initMemory(area, SIZE);
 
-            std::variant<manage_area *, manage_header *> tmp = area;
-            manage_header * header = std::get<manage_header*>(tmp);
+            manage_header * header = &area->_header;
 
             header->_idManage = id;
             header->_nextManage = header->_prevManage = header;
@@ -80,6 +82,35 @@ namespace
         static void dispose(manage_area * area) noexcept
         {
             initMemory(area, SIZE);
+        }
+
+        bool isOverflow() const noexcept
+        {
+            return false;
+        }
+
+        bool isUnderflow() const noexcept
+        {
+            return false;
+        }
+
+        uint32_t addArea(const memory_area * area) const noexcept
+        {
+            assert(!isOverflow());
+
+            return 0;
+        }
+
+        void removeArea(const uint32_t id) const noexcept
+        {
+            assert(!isUnderflow());
+        }
+
+        memory_area * findArea(const uint32_t id) const noexcept
+        {
+            assert(!isUnderflow());
+
+            return nullptr;
         }
 
         manage_header _header;
