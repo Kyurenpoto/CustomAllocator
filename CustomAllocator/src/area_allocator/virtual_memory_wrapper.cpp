@@ -7,7 +7,7 @@ namespace
 	constexpr std::size_t PAGE_SIZE = 4 * 1024;
 }
 
-void* virtual_memory::alloc(std::size_t nPage)
+void* virtual_memory::alloc(std::size_t nPage) noexcept
 {
     void * addr = VirtualAlloc(nullptr, nPage * PAGE_SIZE,
                               MEM_COMMIT, PAGE_READWRITE);
@@ -17,14 +17,14 @@ void* virtual_memory::alloc(std::size_t nPage)
     return addr;
 }
 
-void virtual_memory::dealloc(void * addr)
+void virtual_memory::dealloc(void * addr) noexcept
 {
     assert(VirtualFree(addr, 0, MEM_RELEASE));
 }
 
 namespace
 {
-    virtual_memory::addr_info::addr_state stateWin2Enum(DWORD state)
+    virtual_memory::addr_info::addr_state stateWin2Enum(DWORD state) noexcept
     {
         switch (state)
         {
@@ -38,7 +38,7 @@ namespace
     }
 }
 
-virtual_memory::addr_info virtual_memory::getAddrInfo(void * addr)
+virtual_memory::addr_info virtual_memory::getAddrInfo(void * addr) noexcept
 {
     MEMORY_BASIC_INFORMATION mbi;
     VirtualQuery(addr, &mbi, sizeof(mbi));
