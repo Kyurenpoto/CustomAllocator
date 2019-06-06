@@ -47,7 +47,7 @@ namespace
     struct index_header
     {
         area_header * _area;
-        index_header * _root;
+        index_header * _root; // for debuging
         uint32_t _idArea;
         uint32_t _parent;
         uint32_t _left;
@@ -87,7 +87,7 @@ namespace
         bool isOverflow() const noexcept
         {
             return _header._cntAreaUsed < CNT_CHUNK ||
-                   _chunks[1]._root != &_chunks[1];
+                   _chunks.at(1)._root != &_chunks.at(1);
         }
 
         bool isUnderflow() const noexcept
