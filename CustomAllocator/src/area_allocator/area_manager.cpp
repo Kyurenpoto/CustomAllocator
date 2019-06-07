@@ -4,7 +4,6 @@
 #include "includes/area_allocator/virtual_memory_wrapper.h"
 
 #include <array>
-#include <variant>
 
 namespace
 {
@@ -105,6 +104,7 @@ namespace
         void removeArea(const uint32_t id) const noexcept
         {
             assert(!isUnderflow());
+            assert(findArea(id) != nullptr);
         }
 
         memory_area * findArea(const uint32_t id) const noexcept
@@ -144,16 +144,32 @@ void area_manager::dispose() noexcept
 
 uint32_t area_manager::allocate(std::size_t nPage) noexcept
 {
-    assert(_size > 0);
+    const manage_area * manager = static_cast<const manage_area *>(_areas);
 
-    return 0;
+    assert(manager != nullptr);
+
+    const memory_area * area = static_cast<const memory_area *>(
+                                virtual_memory::alloc(nPage));
+
+    assert(area != nullptr);
+
+    // initialize
+    return manager->addArea(area);
 }
 
 void area_manager::deallocate(uint32_t id) noexcept
 {
-    assert(_size > 0);
+    const manage_area * manager = static_cast<const manage_area *>(_areas);
+    
+    assert(manager != nullptr);
 
-    _sizeArea[id] = 1;
+    memory_area * area = manager->findArea(id);
+
+    assert(area != nullptr);
+
+    // dispose
+    manager->removeArea(id);
+    virtual_memory::dealloc(area);
 }
 
 const std::size_t area_manager::getSizeArea(const uint32_t id) const noexcept
