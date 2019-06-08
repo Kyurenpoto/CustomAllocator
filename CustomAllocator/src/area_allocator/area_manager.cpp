@@ -5,6 +5,8 @@
 
 #include <array>
 
+#include <gsl.h>
+
 namespace
 {
     constexpr std::size_t SIZE_CACHE_LINE = 64;
@@ -35,13 +37,13 @@ namespace
 
     struct area_header
     {
-        std::size_t _idArea;
-        std::size_t _cntChunkTotal;
-        std::size_t _cntChunkUsed;
+        gsl::span<std::byte> _chunks;
         index_header * _index;
+        
+        std::size_t _idArea;
+        std::size_t _cntChunkUsed;
+        std::size_t _sizeChunk;
     };
-
-    using memory_area = cache_line;
 
     struct index_header
     {
@@ -86,7 +88,7 @@ namespace
         bool isOverflow() const noexcept
         {
             return _header._cntAreaUsed < CNT_CHUNK ||
-                   _chunks.at(1)._root != &_chunks.at(1);
+                   _indice.at(1)._root != &_indice.at(1);
         }
 
         bool isUnderflow() const noexcept
@@ -94,7 +96,7 @@ namespace
             return _header._cntAreaUsed == 0;
         }
 
-        uint32_t addArea(const memory_area * area) const noexcept
+        uint32_t addArea(const area_header * area) const noexcept
         {
             assert(!isOverflow());
 
@@ -107,7 +109,7 @@ namespace
             assert(findArea(id) != nullptr);
         }
 
-        memory_area * findArea(const uint32_t id) const noexcept
+        area_header * findArea(const uint32_t id) const noexcept
         {
             assert(!isUnderflow());
 
@@ -115,7 +117,7 @@ namespace
         }
 
         manage_header _header;
-        std::array<index_header, CNT_CHUNK> _chunks;
+        std::array<index_header, CNT_CHUNK> _indice;
     };
 }
 
@@ -148,7 +150,7 @@ uint32_t area_manager::allocate(std::size_t nPage) noexcept
 
     assert(manager != nullptr);
 
-    const memory_area * area = static_cast<const memory_area *>(
+    const area_header * area = static_cast<const area_header *>(
                                 virtual_memory::alloc(nPage));
 
     assert(area != nullptr);
@@ -163,7 +165,7 @@ void area_manager::deallocate(uint32_t id) noexcept
     
     assert(manager != nullptr);
 
-    memory_area * area = manager->findArea(id);
+    area_header * area = manager->findArea(id);
 
     assert(area != nullptr);
 
