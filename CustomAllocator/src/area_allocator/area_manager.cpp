@@ -20,17 +20,83 @@ namespace
         std::memset(memory, 0, size);
     }
 
-    struct cache_line
-    {
-        char data[SIZE_CACHE_LINE];
-    };
-
     struct chunk_header
     {
-        std::size_t _idChunk;
-        std::size_t _sizeAlign;
-        chunk_header * _nextChunk;
-        chunk_header * _prevChunk;
+        area_header *     _area;
+
+        uint32_t          _idChunk;
+        uint8_t           _isAlive;
+        uint8_t           _typeHeader : 4,
+                          _typeChunk  : 4;
+        uint8_t           _sizeChunk;
+        uint8_t           _sizeAlign;
+
+        uint32_t          _next;
+        uint32_t          _prev;
+        uint32_t          _begin;
+        uint32_t          _end;
+    };
+
+    template<std::size_t N>
+    struct internal_chunk
+    {
+        std::array<std::byte, N> data;
+    };
+
+    struct lfe_chunk_64
+    {
+        chunk_header                        _header;
+
+        std::array<internal_chunk<1>, 8>    _chunk_1;
+        std::array<internal_chunk<2>, 4>    _chunk_2;
+        std::array<internal_chunk<4>, 2>    _chunk_4;
+        std::array<internal_chunk<8>, 1>    _chunk_8;
+    };
+
+    struct lfe_chunk_128
+    {
+        chunk_header                         _header;
+
+        std::array<internal_chunk<1>, 16>    _chunk_1;
+        std::array<internal_chunk<2>,  8>    _chunk_2;
+        std::array<internal_chunk<4>,  4>    _chunk_4;
+        std::array<internal_chunk<8>,  2>    _chunk_8;
+        std::array<internal_chunk<16>, 2>    _chunk_16;
+    };
+
+    struct lfe_chunk_256
+    {
+        chunk_header                         _header;
+
+        std::array<internal_chunk<1>, 32>    _chunk_1;
+        std::array<internal_chunk<2>, 16>    _chunk_2;
+        std::array<internal_chunk<4>,  8>    _chunk_4;
+        std::array<internal_chunk<8>,  4>    _chunk_8;
+        std::array<internal_chunk<16>, 2>    _chunk_16;
+        std::array<internal_chunk<32>, 2>    _chunk_32;
+    };
+
+    struct lfe_chunk_512
+    {
+        chunk_header                         _header;
+
+        std::array<internal_chunk<1>, 64>    _chunk_1;
+        std::array<internal_chunk<2>, 32>    _chunk_2;
+        std::array<internal_chunk<4>, 16>    _chunk_4;
+        std::array<internal_chunk<8>,  8>    _chunk_8;
+        std::array<internal_chunk<16>, 4>    _chunk_16;
+        std::array<internal_chunk<32>, 2>    _chunk_32;
+        std::array<internal_chunk<64>, 2>    _chunk_64;
+    };
+
+    struct pool_chunk
+    {
+        chunk_header _header;
+    };
+
+    struct flexible_chunk
+    {
+        chunk_header _header;
     };
 
     struct index_header;
